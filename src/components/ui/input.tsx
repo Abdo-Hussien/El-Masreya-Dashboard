@@ -20,8 +20,8 @@ function Input({ className, type, variant = "default", ...props }: InputProps) {
           "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
         ],
         variant === "plain" && [
-          "bg-transparent text-inherit outline-none border-none shadow-none p-0",
-          "h-8 w-full disabled:opacity-50"
+          "bg-accent text-inherit rounded-md outline-none shadow-none p-0 px-3",
+          "h-8 w-fit flex text-center disabled:opacity-50"
         ],
         className
       )}

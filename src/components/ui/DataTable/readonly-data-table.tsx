@@ -29,11 +29,12 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { ChevronDown } from "lucide-react"
+import { InvoiceDetail } from "@/classes/invoice-detail"
 
 
 type EColumnDef<TData> = TanstackColumnDef<TData> & {
     enableEditing?: boolean;
-};
+}
 
 type DataTableProps<TData, TValue> = {
     data: TData[]
@@ -43,17 +44,9 @@ type DataTableProps<TData, TValue> = {
     className?: string
 }
 
-type InvoiceDetail = {
-    id: number
-    productName: string
-    total: number
-    paidAmount: number
-    notes: string
-}
 
 
-
-export function DataTable<TData, TValue>({
+export function ReadonlyDataTable<TData, TValue>({
     data: initialData,
     columns,
     filterColumnId,
