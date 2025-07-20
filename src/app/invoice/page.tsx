@@ -6,13 +6,34 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 import { ColumnDef as TanstackColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
-async function fetchProducts(query: string) {
-    const res = await fetch(`/api/products?q=${encodeURIComponent(query)}`);
-    const data = await res.json();
-    return data;
+function fetchProducts() {
+    return fetch('/api/customers')
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data: any) => {
+            if (!Array.isArray(data)) {
+                console.warn("Unexpected data format:", data);
+                return [];
+            }
+
+            return data.map((item: any) => ({
+                value: item.CustomerID.toString(),
+                label: item.DisplayName,
+            }));
+        })
+        .catch((err) => {
+            console.error("Failed to fetch customers:", err);
+            return [];
+        });
 }
+
 
 type EColumnDef<TData> = TanstackColumnDef<TData> & {
     enableEditing?: boolean;
@@ -31,7 +52,7 @@ const originalData: InvoiceDetail[] = [{ id: 1, productName: "Apple iPhone 14", 
 type Invoice = {
     id: number
     customerName: string
-    date: string
+    status: "paid" | "unpaid" | "overdue"
     totalAmount: number
     paidAmount: number
     details: InvoiceDetail[]
@@ -147,14 +168,33 @@ const columns: EColumnDef<InvoiceDetail>[] = [
     },
 ]
 export default function InvoicePage() {
+    const [customers, setCustomers] = useState<{ value: string; label: string }[]>([])
     useEffect(() => {
-        fetchProducts("Apple").then(products => {
-            console.log(products);
-        })
+        const loadCustomers = async () => {
+            const data = await fetchProducts()
+            console.log("Fetched customers:", data)
+            setCustomers(data)
+        }
+
+        loadCustomers()
     }, [])
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4">New Invoice</h1>
+            <Select>
+                <SelectTrigger dir='rtl' className="w-[180px]">
+                    <SelectValue placeholder="اسم العميل" />
+                </SelectTrigger>
+                <SelectContent className="max-h-80" dir='rtl'>{customers.map((customer) => {
+                    return (
+                        <SelectItem key={customer.value} value={customer.value}>
+                            {customer.label}
+                        </SelectItem>
+                    )
+                })}
+                </SelectContent>
+            </Select>
+
             <div className="flex flex-wrap gap-4">
                 <DataTable columns={columns} data={originalData} filterColumnId="productName" editable />
                 {/* <DataTable /> */}

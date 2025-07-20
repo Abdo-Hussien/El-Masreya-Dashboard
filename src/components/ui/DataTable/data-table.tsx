@@ -91,10 +91,10 @@ export function DataTable<TData, TValue>({
 
     return (
         <div className={`w-full border rounded-lg ${className ?? ""}`}>
-            <div className="flex items-center p-3">
+            <div className="flex items-center gap-2 p-3">
                 {filterColumnId && (
                     <Input
-                        placeholder="Search..."
+                        placeholder="Search for products..."
                         className="max-w-sm"
                         value={
                             (table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""
@@ -130,9 +130,9 @@ export function DataTable<TData, TValue>({
 
             <div className="border-y">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-gray-50/80 dark:bg-gray-800">
                         {table.getHeaderGroups().map((group) => (
-                            <TableRow key={group.id}>
+                            <TableRow className="hover:!bg-transparent" key={group.id}>
                                 {group.headers.map((header) => (
                                     <TableHead key={header.id}>
                                         {header.isPlaceholder
@@ -147,7 +147,8 @@ export function DataTable<TData, TValue>({
                     <TableBody>
                         {table.getRowModel().rows.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow
+
+                                <TableRow className={`hover:bg-lime-200/10 ${row.index % 2 !== 0 ? 'bg-gray-50/40 dark:bg-gray-800/40' : 'bg-white dark:bg-gray-900/40'}`}
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                 >
@@ -206,7 +207,7 @@ export function DataTable<TData, TValue>({
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                        Previous
+                        السابق
                     </Button>
                     <Button
                         variant="outline"
@@ -214,7 +215,7 @@ export function DataTable<TData, TValue>({
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                        Next
+                        التالي
                     </Button>
                 </div>
             </div>
