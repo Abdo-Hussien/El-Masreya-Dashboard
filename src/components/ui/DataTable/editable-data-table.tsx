@@ -78,7 +78,7 @@ export function EditableDataTable<TData, TValue>({ data: initialData, columns, f
             <div className="flex items-center gap-2 p-3">
                 {typeof filterColumnIds === "object" && filterColumnIds.length > 0 && (
                     <Input
-                        placeholder="Search for products..."
+                        placeholder="ابحث عن منتجات ..."
                         className="max-w-sm"
                         value={
                             table.getColumn(filterColumnIds[0])?.getFilterValue() as string || ""
@@ -124,11 +124,7 @@ export function EditableDataTable<TData, TValue>({ data: initialData, columns, f
                     <TableBody>
                         {table.getRowModel().rows.length ? (
                             table.getRowModel().rows.map((row) => (
-
-                                <TableRow className={`${row.index % 2 !== 0 ? 'bg-gray-50/40 dark:bg-gray-800/40' : 'bg-white dark:bg-gray-900/40'}`}
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
+                                <TableRow className={`${row.index % 2 !== 0 ? 'bg-gray-50/40 dark:bg-gray-800/40' : 'bg-white dark:bg-gray-900/40'}`} key={row.id} data-state={row.getIsSelected() && "selected"} >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
                                             <div className="cursor-text">
