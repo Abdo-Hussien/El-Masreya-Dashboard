@@ -29,12 +29,6 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { ChevronDown } from "lucide-react"
-import { InvoiceDetail } from "@/classes/invoice-detail"
-
-
-type EColumnDef<TData> = TanstackColumnDef<TData> & {
-    enableEditing?: boolean;
-}
 
 type DataTableProps<TData, TValue> = {
     data: TData[]
@@ -42,8 +36,6 @@ type DataTableProps<TData, TValue> = {
     filterColumnIds?: string[]
     className?: string
 }
-
-
 
 export function EditableDataTable<TData, TValue>({ data: initialData, columns, filterColumnIds, className }: DataTableProps<TData, TValue>) {
 
@@ -74,7 +66,7 @@ export function EditableDataTable<TData, TValue>({ data: initialData, columns, f
     })
 
     return (
-        <div className={`w-full border rounded-lg ${className ?? ""}`}>
+        <div className={`w-full border shadow-lg rounded-xl ${className ?? ""}`}>
             <div className="flex items-center gap-2 p-3">
                 {typeof filterColumnIds === "object" && filterColumnIds.length > 0 && (
                     <Input
@@ -135,9 +127,9 @@ export function EditableDataTable<TData, TValue>({ data: initialData, columns, f
                                 </TableRow>
                             ))
                         ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="text-center h-24">
-                                    No results.
+                            <TableRow className="hover:bg-transparent">
+                                <TableCell colSpan={columns.length} className="text-center h-18">
+                                    <p>ابداء باضافة منتج.</p>
                                 </TableCell>
                             </TableRow>
                         )}

@@ -83,7 +83,7 @@ export function ReadonlyDataTable<TData, TValue>({
     })
 
     return (
-        <div className={`w-full border rounded-lg ${className ?? ""}`}>
+        <div className={`w-full border rounded-xl ${className ?? ""}`}>
             <div className="flex items-center gap-2 p-3">
                 {filterColumnId && (
                     <Input

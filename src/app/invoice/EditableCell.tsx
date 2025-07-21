@@ -1,55 +1,65 @@
-"use client";
-import { Input } from "@/components/ui/input";
+"use client"
+
+import { Input } from "@/components/ui/input"
 import {
     useEffect,
     useState,
     useRef,
     forwardRef,
     useImperativeHandle,
-} from "react";
-
-type EditableCellProps<T> = {
-    id: string;
-    initialValue: T;
-    onChange: (value: T) => void;
-    formatter?: (value: T) => string;
-};
+} from "react"
 
 export interface EditableCellHandle {
-    focus: () => void;
+    focus: () => void
+}
+
+type EditableCellProps<T> = {
+    id: string
+    initialValue: T
+    type?: string
+    onChange: (value: T) => void
+    formatter?: (value: T) => string
+    validate?: (value: T) => boolean
+    onAccept?: (value?: T) => void
 }
 
 const EditableCell = forwardRef<EditableCellHandle, EditableCellProps<any>>(
-    function EditableCell({ id, initialValue, onChange, formatter }, ref) {
-        const [isEditing, setIsEditing] = useState(false);
-        const [value, setValue] = useState(initialValue);
-        const inputRef = useRef<HTMLInputElement>(null);
-        const shouldFocus = useRef(false); // used to defer focus until after input is mounted
+    function EditableCell(
+        { id, initialValue, onChange, formatter, type = "text", validate, onAccept },
+        ref
+    ) {
+        const [isEditing, setIsEditing] = useState(false)
+        const [value, setValue] = useState(initialValue)
+        const inputRef = useRef<HTMLInputElement>(null)
 
         useImperativeHandle(ref, () => ({
-            focus: () => {
-                shouldFocus.current = true;
-                setIsEditing(true);
-            },
-        }));
+            focus: () => setIsEditing(true),
+        }))
 
         useEffect(() => {
-            setValue(initialValue);
-        }, [initialValue]);
+            setValue(initialValue)
+        }, [initialValue])
 
         useEffect(() => {
-            if (isEditing && shouldFocus.current) {
-                inputRef.current?.focus();
-                shouldFocus.current = false;
+            if (isEditing && inputRef.current) {
+                inputRef.current.focus()
+                inputRef.current.select()
             }
-        }, [isEditing]);
+        }, [isEditing])
 
-        const displayValue = formatter ? formatter(value) : value;
+        const displayValue = formatter ? formatter(value) : value
 
         const handleSave = (inputValue: any) => {
-            onChange(inputValue);
-            setIsEditing(false);
-        };
+            const isValid = validate?.(inputValue) ?? true
+            if (!isValid) {
+                setValue(initialValue)
+                return
+            }
+            onChange(inputValue)
+            onAccept?.(inputValue)
+            console.log(inputValue)
+            setIsEditing(false)
+        }
 
         return isEditing ? (
             <div className="flex justify-center">
@@ -57,16 +67,20 @@ const EditableCell = forwardRef<EditableCellHandle, EditableCellProps<any>>(
                     id={id}
                     ref={inputRef}
                     variant="plain"
+                    type={type}
                     value={value as unknown as string}
                     onChange={(e) =>
                         setValue(e.target.value as unknown as typeof value)
                     }
                     onBlur={() => handleSave(value)}
                     onKeyDown={(e) => {
-                        if (e.key === "Enter") e.currentTarget.blur();
+                        if (e.key === "Enter") {
+                            if (!value) setValue(initialValue)
+                            e.currentTarget.blur()
+                        }
                         if (e.key === "Escape") {
-                            setValue(initialValue);
-                            setIsEditing(false);
+                            setValue(initialValue)
+                            setIsEditing(false)
                         }
                     }}
                 />
@@ -78,8 +92,8 @@ const EditableCell = forwardRef<EditableCellHandle, EditableCellProps<any>>(
             >
                 {displayValue as string}
             </div>
-        );
+        )
     }
-);
+)
 
-export default EditableCell;
+export default EditableCell
