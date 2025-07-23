@@ -1,5 +1,5 @@
-import CustomersSelect from "./CustomersSelect"
-import InvoiceDetailsGrid from "./InvoiceDetailsGrid"
+import CustomersSelect from "./customers-select"
+import InvoiceDetailsGrid from "./invoice-details-grid"
 
 export default function InvoicePage() {
 

@@ -14,37 +14,25 @@ import {
 import React, { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import { ChevronDown } from "lucide-react"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { ChevronDown, Plus } from "lucide-react"
 
-type DataTableProps<TData, TValue> = {
+type EditableDataTableProps<TData, TValue> = {
     data: TData[]
     columns: TanstackColumnDef<TData, TValue>[]
     filterColumnIds?: string[]
     className?: string
+    addRow?: () => void
 }
 
-export function EditableDataTable<TData, TValue>({ data: initialData, columns, filterColumnIds, className }: DataTableProps<TData, TValue>) {
+export function EditableDataTable<TData, TValue>({ data: initialData, columns, filterColumnIds, addRow, className }: EditableDataTableProps<TData, TValue>) {
+
 
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
-    // const [data, setData] = useState<TData[]>(initialData)
-    // const [editingCell, setEditingCell] = useState<{ rowId: string; columnId: string } | null>(null)
 
     const table = useReactTable({
         data: initialData,
@@ -66,7 +54,7 @@ export function EditableDataTable<TData, TValue>({ data: initialData, columns, f
     })
 
     return (
-        <div className={`w-full border shadow-lg rounded-xl ${className ?? ""}`}>
+        <div className={`w-full border shadow-lg rounded-md ${className ?? ""}`}>
             <div className="flex items-center gap-2 p-3">
                 {typeof filterColumnIds === "object" && filterColumnIds.length > 0 && (
                     <Input
@@ -96,6 +84,9 @@ export function EditableDataTable<TData, TValue>({ data: initialData, columns, f
                         ))}
                     </DropdownMenuContent>
                 </DropdownMenu>
+                <Button onClick={addRow}>
+                    <Plus />
+                </Button>
             </div>
             <div className="border-y">
                 <Table>

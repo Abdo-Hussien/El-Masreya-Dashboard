@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useState } from 'react'
+import { useState } from "react"
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, } from '@/components/ui/command'
@@ -8,15 +9,16 @@ import { Popover, PopoverContent, PopoverTrigger, } from '@/components/ui/popove
 import { Button } from '@/components/ui/button'
 import { cva, type VariantProps } from 'class-variance-authority'
 
-interface ComboboxItem<K = string> {
+export interface ComboboxItem<K = string> {
   label: string
   value: K
 }
 
-interface ComboboxProps<T extends ComboboxItem<K>, K = string> {
+interface ComboboxProps<T = ComboboxItem<string>> {
+  id: string
   items: T[]
-  defaultValue?: K
   onSelect?: (value: T) => void
+  // onBlur?: () => void
   placeholder?: string
   variant?: VariantProps<typeof comboboxVariants>['variant']
   size?: VariantProps<typeof comboboxVariants>['size']
@@ -24,7 +26,7 @@ interface ComboboxProps<T extends ComboboxItem<K>, K = string> {
 }
 
 const comboboxVariants = cva(
-  "inline-flex items-center max-w-sm cursor-pointer justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-normal transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center max-w-sm cursor-pointer justify-center gap-2 whitespace-nowrap rounded-md text-sm font-normal transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
@@ -39,15 +41,15 @@ const comboboxVariants = cva(
           "bg-primary-foreground/60 text-primary hover:bg-primary-foreground/80",
 
         ghost: [
-          "bg-muted/50 text-inherit hover:bg-muted/100 rounded-xl outline-none shadow-none p-0 px-3",
+          "bg-muted/50 text-inherit hover:bg-muted/100 rounded-md outline-none shadow-none p-0 px-3",
           "flex text-center disabled:opacity-50"
         ],
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-xl gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-xl px-6 has-[>svg]:px-4",
+        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         icon: "size-9",
       },
     },
@@ -57,53 +59,40 @@ const comboboxVariants = cva(
     },
   }
 )
-export function Combobox<T extends ComboboxItem<K>, K = string>({ items, defaultValue, onSelect, placeholder = 'Select item...', variant, size, className }: ComboboxProps<T, K> & VariantProps<typeof comboboxVariants>) {
 
+const Combobox = (props: ComboboxProps<ComboboxItem>) => {
 
-  const [open, setOpen] = useState(false)
-  const [selectedValue, setSelectedValue] = useState(defaultValue)
+  const { id, items, onSelect } = props
+  const { placeholder = "Select an item", variant = "default", size = "default", className } = props
 
-  const selectedItem = items.find((item) => item.value === selectedValue)
+  const [open, setOpen] = useState<boolean>(false)
+  const [selectedItem, setSelectedValue] = useState<ComboboxItem>({ label: "", value: "" })
+
+  const applyOnSelect = (selectedValue: string) => {
+    const selected = items.find((i) => i.value === selectedValue)
+    if (selected) {
+      setSelectedValue(selected)
+      onSelect?.(selected)
+    }
+    setOpen(false)
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          className={cn(comboboxVariants({ variant, size, className }), "justify-between")}
-          variant={variant}
-          role="combobox"
-          aria-expanded={open}
-        >
+        <Button id={id} className={cn(comboboxVariants({ variant, size, className }))} variant={variant} role="combobox" aria-expanded={open}>
           {selectedItem?.label || placeholder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-2 h-2 w-2 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder={placeholder} />
           <CommandEmpty>No result found.</CommandEmpty>
-          <CommandGroup>
+          <CommandGroup className="max-h-64 overflow-y-auto">
             {items.map((item) => (
-              <CommandItem
-                key={String(item.value)}
-                value={String(item.value)}
-                onSelect={(currentValue) => {
-                  const selected = items.find((i) => i.value === currentValue)
-                  if (selected) {
-                    setSelectedValue(selected.value)
-                    onSelect?.(selected)
-                  }
-                  setOpen(false)
-                }}
-              >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    selectedValue === item.value
-                      ? 'opacity-100'
-                      : 'opacity-0'
-                  )}
-                />
+              <CommandItem key={String(item.value)} value={`${item.value}`} onSelect={applyOnSelect}>
+                <Check className={cn('mr-2 h-4 w-4', selectedItem.value === item.value ? 'opacity-100' : 'opacity-0')} />
                 {item.label}
               </CommandItem>
             ))}
@@ -113,3 +102,5 @@ export function Combobox<T extends ComboboxItem<K>, K = string>({ items, default
     </Popover>
   )
 }
+
+export default Combobox
