@@ -1,14 +1,14 @@
-import useGrid from "@/components/hooks/useGrid";
-import CustomersSelect from "./customers-select"
-import InvoiceDetailsGrid from "./invoice-details-grid"
+"use client"
+
+// import useGrid from "@/components/hooks/useGrid"
+// import CustomersSelect from "./customers-select"
+import InvoiceForm from "./invoice-form"
 
 export default function InvoicePage() {
-    const { createTransaction, gridError, handleStateChange, tableState } = useGrid()
+    // const { createInvoice, gridError, handleStateChange, tableState } = useGrid()
     return (
-        <div className="p-4 flex flex-col gap-2">
-            <h2 className="mb-2">New Invoice</h2>
-            <CustomersSelect />
-            <InvoiceDetailsGrid />
+        <div className="p-4 flex flex-col gap-2 min-h-screen bg-gradient-to-b from-white to-gray-50 bg-no-repeat antialiased">
+            <InvoiceForm />
         </div>
     );
 }

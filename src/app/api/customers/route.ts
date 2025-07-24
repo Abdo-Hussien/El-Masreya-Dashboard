@@ -8,7 +8,7 @@ export async function GET() {
                                                     FROM Customers
                                                     WHERE State = 1
                                                     ORDER BY DisplayName`)
-
+        pool.close()
         return NextResponse.json(result.recordset)
     } catch (err) {
         console.error(err)
@@ -17,3 +17,7 @@ export async function GET() {
         })
     }
 }
+
+
+
+

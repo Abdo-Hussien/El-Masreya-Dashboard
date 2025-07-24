@@ -26,7 +26,7 @@ interface ComboboxProps<T = ComboboxItem<string>> {
 }
 
 const comboboxVariants = cva(
-  "inline-flex items-center max-w-sm cursor-pointer justify-center gap-2 whitespace-nowrap rounded-md text-sm font-normal transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex p-0 max-w-sm justify-between cursor-pointer whitespace-nowrap rounded-md text-sm font-normal transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
@@ -41,7 +41,7 @@ const comboboxVariants = cva(
           "bg-primary-foreground/60 text-primary hover:bg-primary-foreground/80",
 
         ghost: [
-          "bg-muted/50 text-inherit hover:bg-muted/100 rounded-md outline-none shadow-none p-0 px-3",
+          "bg-muted/50 text-inherit hover:bg-muted/100 rounded-md outline-none shadow-none",
           "flex text-center disabled:opacity-50"
         ],
         link: "text-primary underline-offset-4 hover:underline",
@@ -82,14 +82,14 @@ const Combobox = (props: ComboboxProps<ComboboxItem>) => {
       <PopoverTrigger asChild>
         <Button id={id} className={cn(comboboxVariants({ variant, size, className }))} variant={variant} role="combobox" aria-expanded={open}>
           {selectedItem?.label || placeholder}
-          <ChevronsUpDown className="ml-2 h-2 w-2 shrink-0 opacity-50" />
+          <ChevronsUpDown className="h-2 w-2 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder={placeholder} />
           <CommandEmpty>No result found.</CommandEmpty>
-          <CommandGroup className="max-h-64 overflow-y-auto">
+          <CommandGroup>
             {items.map((item) => (
               <CommandItem key={String(item.value)} value={`${item.value}`} onSelect={applyOnSelect}>
                 <Check className={cn('mr-2 h-4 w-4', selectedItem.value === item.value ? 'opacity-100' : 'opacity-0')} />

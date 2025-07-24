@@ -52,7 +52,7 @@ export default function useGrid() {
         }
     }, [])
 
-    const createTransaction = async () => {
+    const createInvoice = async () => {
         try {
             const savedState: StoredTableState | undefined = await indexedDb.tableState.get('table1')
             if (!savedState || !savedState.state) {
@@ -85,6 +85,6 @@ export default function useGrid() {
         tableState,
         gridError,
         handleStateChange,
-        createTransaction,
+        createInvoice,
     }
 }

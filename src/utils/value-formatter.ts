@@ -42,7 +42,7 @@ const useFormatter = () => {
       const formattedDate = date instanceof Date ? date : new Date(date);
       if (isNaN(formattedDate.getTime())) throw new Error('Cannot parse date: Invalid Date');
 
-      return new Intl.DateTimeFormat("ar-EG").format(formattedDate)
+      return new Intl.DateTimeFormat("ar-EG", options).format(formattedDate);
     } catch (error) {
       console.warn(error);
       return '';
