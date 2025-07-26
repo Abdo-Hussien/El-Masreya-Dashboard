@@ -29,7 +29,7 @@ const EditableComboboxCell = ({ id, items, selectedItem, onChange }: EditableCel
 
     return isEditing ? (
         <div className="flex justify-center">
-            <Combobox variant="ghost" size="sm"
+            <Combobox variant="ghost"
                 id={id}
                 items={items.map((item) => ({ label: item, value: item }))}
                 onSelect={({ label }) => { save(label, true) }}

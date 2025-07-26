@@ -1,45 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client"
-import { useState, useRef } from "react"
-
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-
-import { InvoiceDetail } from "@/classes/invoice-detail"
-import { InputCellHandler } from "@/types/cell-handler"
-
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { EditableDataTable } from "@/components/ui/DataTable/editable-data-table"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-
-import EditableInputCell from "./editable-input-cell"
-
 import { useFormatter } from "@/utils/value-formatter"
-import { ColumnDef } from "@tanstack/react-table"
-import { targetRef } from "@/lib/target-ref"
-import ProductsComboboxCell from "./products-combobox-cell"
-import { useProducts } from "@/components/hooks/useProducts"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Input } from "@/components/ui/input"
-import Combobox from "@/components/ui/combobox"
+import Divider from "@/components/ui/divider"
+import CardItem from "@/components/ui/cards/card-item"
+import InvoiceActions from "./invoice-actions"
+import InvoiceFields from "./invoice-fields"
+import InvoiceDetailsDataTable from "@/components/ui/DataTable/invoice-details-data-table"
 
 
-const defaultColumnHeader = (text: string) => {
-    return (
-        <div className="text-foreground text-center">
-            {text}
-        </div>
-    )
-}
 
 export default function InvoiceForm() {
-    // const { parseNumber, parsePrice } = useFormatter()
-
-    // const [invoiceData, setInvoiceData] = useState<InvoiceDetail[]>([])
-
-    // const cellRefs = useRef<Record<string, InputCellHandler | null>>({})
-
-    // const { focusOnCellRef, setCellRefs } = targetRef(cellRefs)
 
     // const addNewRow = () => {
     //     setInvoiceData((prev) => {
@@ -49,12 +19,8 @@ export default function InvoiceForm() {
     //         return updated
     //     })
     // }
+
     // const removeRow = (index: number) => setInvoiceData((prev) => prev.filter((_, i) => { return i !== index }))
-
-    // const updateRow = (rowId: number, columnId: keyof InvoiceDetail, newValue: string | number) => { }
-
-    // const { products, loading: productsLoading } = useProducts()
-
 
     // const columns: ColumnDef<InvoiceDetail>[] = [
     //     // select column
@@ -290,46 +256,30 @@ export default function InvoiceForm() {
     //         },
     //     },
     // ]
+
+    const { parseDate } = useFormatter()
+
+    const currentDate = parseDate(new Date())
     return (
-        <>
-            <div id="invoice_form" className="flex flex-col bg-white rounded-xl shadow-sm border">
-                <div id="header" className="flex p-4">
-                    <div id="texts" className="flex flex-col">
-                        <div id="text" className="flex flex-col">
-                            <h2 className="mb-2">نموذج الفاتورة</h2>
-                            <span className="font-light text-gray-600">{useFormatter().parseDate(new Date())}</span>
-                            <span className="font-bold">٥ كتب</span>
-                        </div>
-                        <div id="invoice_info" className="flex flex-col justify-end gap-2">
-                            <Checkbox />
-                            <div className="flex flex-wrap flex-1/2 gap-4">
-                                <Combobox placeholder="اختر العميل..." variant="outline" id={""} items={[]} />
-                                <Combobox placeholder="اختر حالة الفاتورة..." variant="outline" id={""} items={[]} />
-                            </div>
-                        </div>
-                    </div>
-                    <div id="main_actions" className="flex w-full h-full gap-4 justify-end align-top">
-                        <div id="button-group" className="flex flex-wrap-reverse justify-end align-top gap-4">
-                            <Button variant="tonal">
-                                ابدأ من جديد
-                            </Button>
-                            <Button>
-                                إنشاء فاتورة
-                            </Button>
-                        </div>
-                    </div>
+        <div id="inv_form" className="flex flex-col grow bg-white rounded-xl border">
+
+            <div className="flex flex-col grow basis-1/6 space-y-12 p-4">
+                <div id="inv-title-actions" className="flex">
+                    <CardItem id="inv-text" title="نموذج الفاتورة" subtitle={currentDate}>
+                        <span className="font-bold text-sm">٥ كتب</span>
+                    </CardItem>
+                    <InvoiceActions />
                 </div>
-                <div id="divider" className="flex bg-gray-200 w-full h-[1px]" />
-                <div id="body" className="flex flex-col p-4">
-                    <p>Body</p>
+                <div id="inv_info" className="flex flex-col justify-end gap-4">
+                    <InvoiceFields customers={[]} invoiceStatuses={[]} />
                 </div>
-                {/* <EditableDataTable
-                columns={columns}
-                data={invoiceData}
-                addRow={addNewRow}
-                filterColumnIds={["productName", "notes"]}
-                /> */}
-            </div >
-        </>
+            </div>
+
+            <Divider />
+
+            <div id="body" className="flex flex-col grow-[8] basis-5/6">
+                <InvoiceDetailsDataTable />
+            </div>
+        </div>
     )
 }

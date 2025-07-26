@@ -1,15 +1,15 @@
 
 export class InvoiceDetail {
     barcode: string
-    productName: string
+    bookTitle: string
     quantity: number
     unitPrice: number
     sale: number
     total: number
 
-    constructor(barcode?: string, productName?: string, quantity?: number, unitPrice?: number, total?: number, sale?: number) {
+    constructor(barcode?: string, bookTitle?: string, quantity?: number, unitPrice?: number, total?: number, sale?: number) {
         this.barcode = barcode || "null"
-        this.productName = productName || "null"
+        this.bookTitle = bookTitle || "null"
         this.quantity = quantity || 1
         this.unitPrice = unitPrice || 0
         this.sale = sale || 0
