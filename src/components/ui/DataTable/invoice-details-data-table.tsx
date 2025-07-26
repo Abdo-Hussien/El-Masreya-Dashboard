@@ -7,8 +7,8 @@ import Button from "../button"
 import EditableDataTable from "./editable-data-table"
 import { InvoiceDetail } from "@/classes/invoice-detail"
 import EditableInputCell from "@/app/invoice/editable-input-cell"
-import { Checkbox } from "@radix-ui/react-checkbox"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu"
+import { CheckboxBox } from "@/components/ui/checkbox-box"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "../skeleton"
 import { useFormatter } from "@/utils/value-formatter"
 
@@ -34,20 +34,20 @@ export default function InvoiceDetailsDataTable() {
             enableSorting: false,
             enableHiding: false,
             header: ({ table }) => (
-                <Checkbox
+                <CheckboxBox
                     checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
                     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                     aria-label="Select all"
                 />
             ),
             cell: ({ row }) => (
-                <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />
+                <CheckboxBox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />
             ),
         },
         // barcode column
         {
             accessorKey: "barcode",
-            header: () => defaultColumnHeader("الباركود"),
+            header: "الباركود",
             cell: ({ row, column }) => {
                 const value = row.getValue(column.id) as string;
                 return (
@@ -64,26 +64,15 @@ export default function InvoiceDetailsDataTable() {
         // product name column
         {
             accessorKey: "bookTitle",
-            header: () => defaultColumnHeader("اسم المنتج"),
+            header: "اسم المنتج",
             cell: ({ row, column }) => {
-                // if (productsLoading) return (
-                //     <div className="flex justify-center">
-                //         <Skeleton className="h-6 w-24" />
-                //     </div>
-                // )
-                // const setInvData = (newValue: string) => {
-                //     const rowIndex = row.id
-                //     const colKey = column.id as keyof InvoiceDetail
-                //     const updateMethod = (rowData: any, idx: any) => idx === Number(rowIndex) ? { ...rowData, [colKey]: newValue } : rowData
-                //     setInvoiceData((prevData) => prevData.map(updateMethod))
-                // }
                 return <p>Hello</p>
             },
         },
         // quantity column
         {
             accessorKey: "quantity",
-            header: () => defaultColumnHeader("العدد"),
+            header: "العدد",
             cell: ({ row, column }) => {
                 const value = row.getValue(column.id) as number
                 return (
@@ -92,21 +81,7 @@ export default function InvoiceDetailsDataTable() {
                             id={`${column.id}-${row.id}`}
                             type="number"
                             initialValue={value}
-                            onChange={(newValue: number) => {
-                                // const rowIndex = row.index;
-                                // const colKey = column.id as keyof InvoiceDetail;
-
-                                // setInvoiceData((prevData) =>
-                                //     prevData.map((rowData, idx) =>
-                                //         idx === rowIndex
-                                //             ? {
-                                //                 ...rowData,
-                                //                 [colKey]: newValue,
-                                //             }
-                                //             : rowData
-                                //     )
-                                // )
-                            }}
+                            onChange={(newValue: number) => { }}
                             formatter={(val) => String(parseNumber(val))}
                             validate={(val) => true}
                         />
@@ -117,7 +92,7 @@ export default function InvoiceDetailsDataTable() {
         // unit price column
         {
             accessorKey: "unitPrice",
-            header: () => defaultColumnHeader("الفئة"),
+            header: "الفئة",
             cell: ({ row, column }) => {
                 const value = row.getValue(column.id) as number;
                 return (
@@ -125,21 +100,7 @@ export default function InvoiceDetailsDataTable() {
                         id={`${column.id}-${row.id}`}
                         type="number"
                         initialValue={value}
-                        onChange={(newValue: number) => {
-                            // const rowIndex = row.index;
-                            // const colKey = column.id as keyof InvoiceDetail;
-
-                            // setInvoiceData((prevData) =>
-                            //     prevData.map((rowData, idx) =>
-                            //         idx === rowIndex
-                            //             ? {
-                            //                 ...rowData,
-                            //                 [colKey]: newValue,
-                            //             }
-                            //             : rowData
-                            //     )
-                            // )
-                        }}
+                        onChange={(newValue: number) => { }}
                         formatter={(val) => parsePrice(val)}
                         validate={(val) => true}
                     />
@@ -149,7 +110,7 @@ export default function InvoiceDetailsDataTable() {
         // sale column
         {
             accessorKey: "sale",
-            header: () => defaultColumnHeader("الخصم"),
+            header: "الخصم",
             cell: ({ row, column }) => {
                 const value = row.getValue(column.id)?.toString() ?? "";
                 return (
@@ -157,21 +118,7 @@ export default function InvoiceDetailsDataTable() {
                         id={`${column.id}-${row.id}`}
                         type="number"
                         initialValue={value}
-                        onChange={(newValue: string) => {
-                            // const rowIndex = row.index;
-                            // const colKey = column.id as keyof InvoiceDetail;
-
-                            // setInvoiceData((prevData) =>
-                            //     prevData.map((rowData, idx) =>
-                            //         idx === rowIndex
-                            //             ? {
-                            //                 ...rowData,
-                            //                 [colKey]: parseFloat(newValue),
-                            //             }
-                            //             : rowData
-                            //     )
-                            // )
-                        }}
+                        onChange={(newValue: string) => { }}
                         formatter={(val) => parsePrice(val)}
                         validate={(val) => true}
                     />
@@ -181,39 +128,14 @@ export default function InvoiceDetailsDataTable() {
         // total column
         {
             accessorKey: "total",
-            header: ({ column }) => (
-                <div className="text-center">
-                    <Button
-                        variant="ghost"
-                        className="text-foreground font-medium"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        المجموع
-                        <ArrowUpDown />
-                    </Button>
-                </div>
-            ),
+            header: "المجموع",
             cell: ({ row, column }) => {
                 const value = row.getValue(column.id)?.toString() ?? "";
                 return <EditableInputCell
                     id={`${column.id}-${row.id}`}
                     type="number"
                     initialValue={value}
-                    onChange={(newValue: string) => {
-                        // const rowIndex = row.index;
-                        // const colKey = column.id as keyof InvoiceDetail;
-
-                        // setInvoiceData((prevData) =>
-                        //     prevData.map((rowData, idx) =>
-                        //         idx === rowIndex
-                        //             ? {
-                        //                 ...rowData,
-                        //                 [colKey]: parseFloat(newValue),
-                        //             }
-                        //             : rowData
-                        //     )
-                        // );
-                    }}
+                    onChange={(newValue: string) => { }}
                     formatter={(val) => parsePrice(val)}
                 ></EditableInputCell>
             },
