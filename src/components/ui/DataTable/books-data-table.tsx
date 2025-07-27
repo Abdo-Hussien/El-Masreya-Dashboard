@@ -6,36 +6,36 @@ import Button from "../button"
 import ReadonlyDataTable from "./readonly-data-table"
 
 const data: Book[] = [
-    {
-        id: "m5gr84i9",
-        amount: 316,
-        status: "success",
-        email: "ken99@example.com",
-    },
-    {
-        id: "3u1reuv4",
-        amount: 242,
-        status: "success",
-        email: "Abe45@example.com",
-    },
-    {
-        id: "derv1ws0",
-        amount: 837,
-        status: "processing",
-        email: "Monserrat44@example.com",
-    },
-    {
-        id: "5kma53ae",
-        amount: 874,
-        status: "success",
-        email: "Silas22@example.com",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 721,
-        status: "failed",
-        email: "carmella@example.com",
-    },
+    // {
+    //     id: "m5gr84i9",
+    //     amount: 316,
+    //     status: "success",
+    //     email: "ken99@example.com",
+    // },
+    // {
+    //     id: "3u1reuv4",
+    //     amount: 242,
+    //     status: "success",
+    //     email: "Abe45@example.com",
+    // },
+    // {
+    //     id: "derv1ws0",
+    //     amount: 837,
+    //     status: "processing",
+    //     email: "Monserrat44@example.com",
+    // },
+    // {
+    //     id: "5kma53ae",
+    //     amount: 874,
+    //     status: "success",
+    //     email: "Silas22@example.com",
+    // },
+    // {
+    //     id: "bhqecj4p",
+    //     amount: 721,
+    //     status: "failed",
+    //     email: "carmella@example.com",
+    // },
 ]
 
 
@@ -77,10 +77,10 @@ export default function BooksDataTable() {
             cell: ({ row }) => <div className="lowercase">{row.getValue("price")}</div>,
         },
         {
-            accessorKey: "unitsInStock",
+            accessorKey: "quantityInStock",
             header: () => "العدد في المخزن",
             cell: ({ row }) => {
-                const quantityInStock = Number(row.getValue("unitsInStock"))
+                const quantityInStock = Number(row.getValue("quantityInStock"))
 
                 return <div className="text-right font-medium">{quantityInStock}</div>
             },

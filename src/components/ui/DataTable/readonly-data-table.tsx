@@ -25,7 +25,7 @@ export default function ReadonlyDataTable({ data, columns, quickFilters }: { dat
 
     return (
         <>
-            <DataTable table={table} filterField="email" quickFilters={quickFilters}>
+            <DataTable table={table} filterField="bookTitle" quickFilters={quickFilters}>
                 <TableBody>
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (

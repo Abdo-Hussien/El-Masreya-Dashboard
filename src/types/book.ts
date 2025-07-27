@@ -1,6 +1,8 @@
 export type Book = {
     id: string
-    amount: number
-    status: "pending" | "processing" | "success" | "failed"
-    email: string
+    bookTitle: string
+    quantityInStock: number
+    wholesalePrice: number // الفئة
+    price: number // السعر
+    quantityPerPack: number // القطع
 }
