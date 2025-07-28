@@ -13,9 +13,15 @@
   writing-mode: vertical-rl;
 }
 
+.glass {
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
 
 caption {
-  font-size: clamp(0.857rem, calc(0.714rem + 0.333vw), 1rem); /* min: 12px, max: 14px */
+  font-size: clamp(0.857rem, calc(0.714rem + 0.333vw), 1rem);
+  /* min: 12px, max: 14px */
 }
 
 @theme inline {

@@ -2,14 +2,13 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { MoreHorizontal } from "lucide-react"
 import Button from "../button"
 import EditableDataTable from "./editable-data-table"
 import { InvoiceDetail } from "@/classes/invoice-detail"
 import EditableInputCell from "@/app/invoice/editable-input-cell"
 import { CheckboxBox } from "@/components/ui/checkbox-box"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
-import { Skeleton } from "../skeleton"
 import { useFormatter } from "@/utils/value-formatter"
 
 const data: InvoiceDetail[] = []

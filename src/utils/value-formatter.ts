@@ -21,7 +21,7 @@ const useFormatter = () => {
         number = 0.00;
 
       if (number == null) throw new Error('Cannot parse number: Number is NULL')
-      return new Intl.NumberFormat("ar-EG").format(number)
+      return new Intl.NumberFormat("ar-EG", options).format(number)
     } catch (error) {
       console.warn(error)
       return '-1'
