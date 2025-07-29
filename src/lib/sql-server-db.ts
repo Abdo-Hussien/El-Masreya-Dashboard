@@ -1,6 +1,8 @@
 // lib/db.js
 import dotenv from 'dotenv';
 import sql from 'mssql';
+import odbc from 'odbc';
+
 dotenv.config();
 
 
@@ -18,15 +20,27 @@ const config: sql.config = {
     idleTimeoutMillis: 30000, // Close idle connections after 30s
   },
   options: {
-    encrypt: true,
+    encrypt: false,
     trustServerCertificate: true,
   },
 };
 
+const odbcParams: odbc.ConnectionParameters = { connectionString: 'DSN=Masria_V26', connectionTimeout: 20000 }
 
-export async function getConnection(): Promise<sql.ConnectionPool> {
-    if (!config.user || !config.password || !config.database) throw new Error('Missing database credentials in environment variables.');
-    if (!pool || !pool.connected) pool = await sql.connect(config);
-
-    return pool;
+async function getODBC(): Promise<odbc.Connection> {
+  return await odbc.connect(odbcParams);
 }
+
+async function getConnection(): Promise<sql.ConnectionPool> {
+  console.log("Config: ", config)
+  if (!config.user || !config.password || !config.database) throw new Error('Missing database credentials in environment variables.');
+  if (!pool || !pool.connected) pool = await sql.connect(config);
+
+  return pool;
+}
+
+export {
+  getConnection,
+  getODBC
+};
+
