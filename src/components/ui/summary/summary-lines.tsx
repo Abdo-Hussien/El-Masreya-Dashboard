@@ -39,7 +39,7 @@ const SaleFormatIcon = ({ format, setFormat }: { format: SaleFormat, setFormat: 
 
 const SummaryLine = ({ label, value, formatter, labelStyle, valueStyle, action, children }: SummaryLineProps) => {
     return (
-        <div className="flex gap-4 overflow-hidden items-center">
+        <div className="flex gap-4 w-full lg:w-1/2 overflow-hidden items-center">
             <p className={cn("flex whitespace-nowrap", labelStyle)}>{label}</p>
             {action}
             <Divider />

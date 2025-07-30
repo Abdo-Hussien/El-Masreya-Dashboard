@@ -2,7 +2,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import Button from "../button"
 import EditableDataTable from "./editable-data-table"
 import { InvoiceDetail } from "@/classes/invoice-detail"
@@ -11,7 +11,14 @@ import { CheckboxBox } from "@/components/ui/checkbox-box"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { useFormatter } from "@/utils/value-formatter"
 
-const data: InvoiceDetail[] = []
+const data: InvoiceDetail[] = [{
+    barcode: "aafsdf",
+    quantity: 1,
+    bookTitle: "dsfsdf",
+    sale: 324,
+    total: 23423,
+    unitPrice: 234
+}]
 
 
 const defaultColumnHeader = (text: string) => {
@@ -146,29 +153,12 @@ export default function InvoiceDetailsDataTable() {
             cell: ({ row }) => {
                 const payment = row.original;
                 return (
-                    <div className="text-right">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">Open menu</span>
-                                    <MoreHorizontal />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
-                                <DropdownMenuItem
-                                    onClick={() => navigator.clipboard.writeText(payment.bookTitle)}
-                                >
-                                    نسخ اسم المنتج
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    ازالة السطر
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                    <div className="flex justify-end">
+                        <Button variant="ghost">
+                            <Trash2 />
+                        </Button>
                     </div>
-                );
+                )
             },
         },
     ]

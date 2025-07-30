@@ -1,23 +1,52 @@
 "use client"
-
-import { useState } from "react"
-import SummaryDialog from "@/components/ui/dialogs/summary-dialog"
+import CardItem from "@/components/ui/cards/card-item"
+import Divider from "@/components/ui/divider"
+import { SummaryLine, SaleSummaryLine, AmountPaidSummaryLine } from "@/components/ui/summary/summary-lines"
+import { InvoiceContext } from "@/store/invoice-context"
+import { SaleFormat } from "@/types/sale-format"
+import { useFormatter } from "@/utils/value-formatter"
+import { Checkbox } from "@/components/ui/checkbox"
+import { useContext, useState, useEffect } from "react"
 
 export default function InvoiceSummary() {
-    const [isSummaryOpen, setSummaryOpen] = useState<boolean>(false)
+
+    const { summaryFields, execute } = useContext(InvoiceContext)
+    const { parsePrice } = useFormatter()
+    const [saleFormat, setSaleFormat] = useState<SaleFormat>('percentage')
+
+    const [isPaid, setIsPaid] = useState(false)
+
+    const isPaidCheckbox = (value: boolean) => {
+        setIsPaid(value)
+    }
+
+    // This `useEffect` callback activates two times in a row
+    useEffect(() => {
+        console.log("From useEffect: ")
+        if (isPaid) execute({ type: "set amount paid", newValue: summaryFields.total, saleFormat, })
+    },
+        [execute, isPaid, saleFormat, summaryFields.total])
 
 
-    const openSummary = () => setSummaryOpen(true)
-    const closeSummary = () => setSummaryOpen(false)
     return (
         <>
-            <div data-component="overlay" className="fixed inset-0 z-50 pointer-events-none">
-                <div onClick={openSummary} className="absolute flex vertical-text px-6 py-1 transition-all duration-200 top-1/2 pointer-events-auto rounded-l-2xl right-0 transform -translate-y-1/2 cursor-pointer border border-gray-900 bg-[linear-gradient(to_top_right,_#111827,_#2C3444,_#111827,_#2C3444)]" >
-                    <caption className="text-shadow-white text-muted/90 hover:text-white">الإجماليات</caption>
+            <div className={`flex flex-col rounded-2xl p-4 transition-all duration-300 ease-in-out`}>
+                <CardItem title="الإجماليات" subtitle="تفحص الإجماليات" className="items-center justify-center" />
+                <div className="flex py-4 h-full justify-center flex-col items-center gap-2">
+
+                    <SummaryLine label="المجموع" formatter={parsePrice} value={summaryFields.subTotal} />
+                    <SaleSummaryLine format={saleFormat} setFormat={setSaleFormat} value={summaryFields.sale} onChange={execute} />
+                    <SummaryLine label="صافي المجموع" formatter={parsePrice} value={summaryFields.total} />
+                    <AmountPaidSummaryLine format={saleFormat} value={summaryFields.amountPaid} onChange={execute} />
+                    <SummaryLine label="المجموع النهائي" formatter={parsePrice} value={summaryFields.finalTotal} valueStyle="font-bold" />
+
+                </div>
+                <div className="flex my-4 justify-center items-center gap-4 h-6">
+                    <Checkbox className="font-medium" label="مدفوع" onCheckedChange={isPaidCheckbox} />
+                    <Divider vertical />
+                    <Checkbox className="font-medium" label="صافي المجموع" />
                 </div>
             </div>
-
-            <SummaryDialog isOpen={isSummaryOpen} onClose={closeSummary} />
         </>
     )
 }

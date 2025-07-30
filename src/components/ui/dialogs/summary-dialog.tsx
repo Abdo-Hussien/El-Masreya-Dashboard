@@ -50,7 +50,7 @@ export default function SummaryDialog({ isOpen, onClose }: {
                 <div className="flex my-4 justify-center items-center gap-4 h-6">
                     <Checkbox className="font-medium" label="مدفوع" onCheckedChange={isPaidCheckbox} />
                     <Divider vertical />
-                    <Checkbox className="font-medium" label="صافي المجموع" checked />
+                    <Checkbox className="font-medium" label="صافي المجموع" />
                 </div>
                 <Button className="block rounded-lg" >إنشاء فاتورة</Button>
             </div>

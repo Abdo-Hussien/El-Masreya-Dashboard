@@ -72,7 +72,7 @@ const EditableInputCell = forwardRef<InputCellHandler, EditableCellProps<any>>(
         }
 
         return isEditing ? (
-            <div className="flex justify-center">
+            <div className="flex justify-start">
                 <Input
                     id={id}
                     ref={inputRef}
@@ -88,7 +88,7 @@ const EditableInputCell = forwardRef<InputCellHandler, EditableCellProps<any>>(
             </div>
         ) : (
             <div
-                className="cursor-pointer text-center"
+                className="cursor-pointer text-right"
                 onDoubleClick={(e) => {
                     e.preventDefault()
                     setIsEditing(true)

@@ -19,8 +19,8 @@
 }
 
 
-caption {
-  font-size: clamp(0.857rem, calc(0.714rem + 0.333vw), 1rem);
+.caption {
+  font-size: clamp(0.79rem, calc(0.714rem + 0.333vw), 0.9rem);
   /* min: 12px, max: 14px */
 }
 

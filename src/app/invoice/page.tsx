@@ -4,8 +4,8 @@
 
 import InvoiceForm from "./invoice-form"
 import ExtendedItemSearch from "./extended-item-search";
-import InvoiceSummary from "./invoice-summary";
 import InvoiceContextProvider from "@/store/invoice-context";
+import InvoiceSummary from "./invoice-summary";
 
 export default function InvoicePage() {
     // const { createInvoice, gridError, handleStateChange, tableState } = useGrid()
@@ -16,9 +16,9 @@ export default function InvoicePage() {
         <InvoiceContextProvider>
             <div className="p-4 flex flex-col gap-2 min-h-screen bg-gradient-to-b from-white to-gray-50 bg-no-repeat antialiased">
                 <InvoiceForm />
-                <ExtendedItemSearch />
+                <InvoiceSummary />
             </div>
-            <InvoiceSummary />
+            <ExtendedItemSearch />
         </InvoiceContextProvider>
     );
 }
