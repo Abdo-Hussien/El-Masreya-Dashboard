@@ -5,10 +5,9 @@ interface InputProps extends React.ComponentProps<"input"> {
   variant?: "default" | "plain";
 }
 
-function Input({ className, type, variant = "default", ...props }: InputProps) {
+function Input({ className, variant = "default", ...props }: InputProps) {
   return (
     <input
-      type={type}
       data-slot="input"
       className={cn(
         variant === "default" && [
@@ -20,8 +19,8 @@ function Input({ className, type, variant = "default", ...props }: InputProps) {
           "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
         ],
         variant === "plain" && [
-          "bg-muted/50 text-inherit rounded-md outline-none shadow-none p-0 px-3",
-          "h-8 w-fit flex text-center disabled:opacity-50"
+          "bg-muted/50 text-inherit rounded-md outline-none shadow-none",
+          "h-8 text-center disabled:opacity-50"
         ],
         className
       )}

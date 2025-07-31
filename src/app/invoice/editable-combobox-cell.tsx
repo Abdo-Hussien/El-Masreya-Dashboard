@@ -1,51 +1,71 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client"
 
-import { useState } from "react"
-import Combobox from "@/components/ui/combobox"
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
+import { Command as CommandPrimitive } from "cmdk"
+import Combobox, { ComboboxItem } from "@/components/ui/combobox"
+import { Mode } from "@/types/mode"
+import { NewEditableCellProps } from "@/types/editable-cell-props"
+import { InputCellHandler } from "@/types/cell-handler"
 
-type EditableCellProps = {
-    id: string
-    selectedItem: string
-    items: string[]
-    onChange: (value: string) => void
+type EditableComboboxCellProps = NewEditableCellProps & {
+    item?: ComboboxItem
+    items: ComboboxItem[]
 }
 
 
-const EditableComboboxCell = ({ id, items, selectedItem, onChange }: EditableCellProps) => {
-    const [isEditing, setIsEditing] = useState(false)
-    const [selectedValue, setSelectedValue] = useState(selectedItem)
-    const [committedValue, setCommittedValue] = useState(selectedItem)
 
-    const save = (next: typeof selectedValue, apply: boolean = true) => {
-        if (!apply) setSelectedValue(committedValue)
-        else {
-            setCommittedValue(next)
-            onChange(next)
+export default forwardRef<InputCellHandler, Omit<React.ComponentProps<typeof CommandPrimitive.Item>, "ref"> & EditableComboboxCellProps>(
+    function EditableComboboxCell({ id, item, items, onValueAccepted, ...props }, ref) {
+        const [mode, setMode] = useState<Mode>("read")
+        const [selectedItem, setSelectedItem] = useState(item)
+        const buttonRef = useRef<HTMLButtonElement>(null)
+
+        useImperativeHandle(ref, () => ({
+            activateEditor: () => setMode("write")
+        }))
+
+        useEffect(() => {
+            if (mode === "write") {
+                buttonRef.current?.focus()
+            }
+        }, [mode])
+
+        const onDoubleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            e.preventDefault()
+            setMode("write")
         }
 
-        setIsEditing(false)
-    }
+        // Discard
+        const handleOnBlur = () => {
+            setSelectedItem(item)
+            setMode("read")
+        }
 
-    return isEditing ? (
-        <div className="flex justify-center">
-            <Combobox variant="ghost"
-                id={id}
-                items={items.map((item) => ({ label: item, value: item }))}
-                onSelect={({ label }) => { save(label, true) }}
-                placeholder="اختر منتج">
-            </Combobox>
-        </div>
-    ) : (
-        <div className="cursor-pointer text-center"
-            onDoubleClick={(e) => {
-                e.preventDefault()
-                setIsEditing(true)
-            }}>
-            {committedValue}
-        </div>
-    )
-}
+        // Accept
+        const handleOnSelect = (value: string) => {
+            const selected = items.find((v) => v.value == value)
+            if (!selected) {
+                alert("Internal Error..")
+                return
+            }
 
+            setSelectedItem(selected)
+            onValueAccepted(selected)
 
-export default EditableComboboxCell
+            setMode("read")
+        }
+
+        return mode == "write" ? (
+            <div className="flex justify-start">
+                <Combobox id={id} ref={buttonRef} item={selectedItem} items={items} variant="ghost" placeholder="اختر منتج"
+                    mode={mode} onSelect={handleOnSelect} handleOnBlur={handleOnBlur}
+                    {...props}
+                />
+            </div>
+        ) : (
+            <p className="cursor-pointer" onDoubleClick={onDoubleClick}>
+                {selectedItem?.label || 'لا يوجد'}
+            </p>
+        )
+    })

@@ -1,27 +1,28 @@
 
 "use client"
 
-import { useState } from "react"
+import { forwardRef, useEffect, useState } from "react"
+import { Command as CommandPrimitive } from "cmdk"
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger, } from '@/components/ui/popover'
 import Button from '@/components/ui/button'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { Mode } from "@/types/mode"
 
-export interface ComboboxItem<K = string> {
+export interface ComboboxItem<K = any> {
   label: string
   value: K
 }
 
-interface ComboboxProps<T = ComboboxItem<string>> {
-  id?: string
+interface ComboboxProps<T = ComboboxItem> {
+  item?: T
   items: T[]
-  onSelect?: (value: T) => void
-  // onBlur?: () => void
+  mode?: Mode
+  handleOnBlur?: () => void
   placeholder?: string
   variant?: VariantProps<typeof comboboxVariants>['variant']
-  className?: string
 }
 
 const comboboxVariants = cva(
@@ -43,47 +44,69 @@ const comboboxVariants = cva(
   }
 )
 
-const Combobox = (props: ComboboxProps<ComboboxItem>) => {
 
-  const { id, items, onSelect } = props
-  const { placeholder = "Select an item", variant = "default", className } = props
+export default forwardRef<HTMLButtonElement, Omit<React.ComponentProps<typeof CommandPrimitive.Item>, "ref"> & ComboboxProps<ComboboxItem>>(
+  function Combobox({
+    item,
+    items,
+    mode,
+    id,
+    onSelect,
+    handleOnBlur,
+    placeholder = "Select an item",
+    variant = "default",
+    className,
+    ...props
+  },
+    ref) {
 
-  const [open, setOpen] = useState<boolean>(false)
-  const [selectedItem, setSelectedValue] = useState<ComboboxItem>({ label: "", value: "" })
 
-  const applyOnSelect = (selectedValue: string) => {
-    const selected = items.find((i) => i.value === selectedValue)
-    if (selected) {
-      setSelectedValue(selected)
-      onSelect?.(selected)
+    const [open, setOpen] = useState<boolean>(false)
+
+
+    function handleOnSelect<T = string>(value: T) {
+
+      setOpen(false)
+
+      if (typeof value == "string")
+        onSelect?.(value)
     }
-    setOpen(false)
-  }
 
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button id={id} componentVariants={comboboxVariants({ variant, className }) as VariantProps<typeof comboboxVariants>} variant={variant} role="combobox" aria-expanded={open}>
-          {selectedItem?.label || placeholder}
-          <ChevronsUpDown className="h-2 w-2 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
-          <CommandInput placeholder={placeholder} />
-          <CommandEmpty>No result found.</CommandEmpty>
-          <CommandGroup>
-            {items.map((item) => (
-              <CommandItem key={String(item.value)} value={`${item.value}`} onSelect={applyOnSelect}>
-                <Check className={cn('mr-2 h-4 w-4', selectedItem.value === item.value ? 'opacity-100' : 'opacity-0')} />
-                {item.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  )
-}
+    const onOpenChange = (open: boolean) => {
+      setOpen(open)
+      handleOnBlur?.()
+    }
 
-export default Combobox
+
+    // Why does it render many times?
+    useEffect(() => {
+      if (mode == "read") setOpen(false)
+      else if (mode == "write") setOpen(true)
+    }, [mode, setOpen])
+
+    const componentVariants = comboboxVariants({ variant, className }) as VariantProps<typeof comboboxVariants>
+    return (
+      <Popover open={open} onOpenChange={onOpenChange}>
+        <PopoverTrigger asChild>
+          <Button id={id} ref={ref} componentVariants={componentVariants} role="combobox" aria-expanded={open}>
+            {item?.label || <span className="text-muted-foreground">{placeholder}</span>}
+            <ChevronsUpDown className="h-2 w-2 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-full p-0">
+          <Command>
+            <CommandInput placeholder={placeholder} />
+            <CommandEmpty>No result found.</CommandEmpty>
+            <CommandGroup>
+              {items.map((v) => (
+                <CommandItem key={String(v.value)} value={`${v.value}`} onSelect={handleOnSelect} {...props}>
+                  <Check className={cn('mr-2 h-4 w-4', item?.value === v.value ? 'opacity-100' : 'opacity-0')} />
+                  {v.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    )
+  })

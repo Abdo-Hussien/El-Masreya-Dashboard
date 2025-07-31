@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import Divider from "../divider"
 import { SaleFormat } from "@/types/sale-format"
 import { SummaryAction } from "@/types/summary-action"
+import { Mode } from "@/types/mode"
 
 
 interface SummaryLineProps<T = number> {
@@ -50,7 +51,7 @@ const SummaryLine = ({ label, value, formatter, labelStyle, valueStyle, action, 
 
 
 const EditableSummaryLine = ({ label, value, onChange, labelStyle, formatter, valueStyle, action }: EditableSummaryLineProps) => {
-    const [mode, setMode] = useState<"read" | "write">("read")
+    const [mode, setMode] = useState<Mode>("read")
     const [internalValue, setInternalValue] = useState(value)
 
     const handleDoubleClick = () => setMode("write")
