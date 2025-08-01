@@ -14,6 +14,7 @@ import EditableComboboxCell from "@/app/invoice/editable-combobox-cell"
 import { ComboboxItem } from "../combobox"
 import { CellHandler } from "@/types/cell-handler"
 import { InvoiceContext } from "@/store/invoice-context"
+import { Book } from "@/types/book"
 
 type CellRendererProps = {
     row: Row<InvoiceDetail>,
@@ -89,8 +90,19 @@ export default function InvoiceDetailsDataTable() {
         // barcode column
         {
             accessorKey: "barcode", header: "الباركود", cell: (props) => {
-
-                const items = [{ label: "hello", value: "world" }]
+                const items: ComboboxItem<Book>[] = [
+                    {
+                        label: "224253579",
+                        value: {
+                            id: "224253579",
+                            bookTitle: "gfgsdf",
+                            price: 363,
+                            quantityInStock: 43,
+                            quantityPerPack: 67,
+                            wholesalePrice: 345
+                        }
+                    }
+                ]
                 return comboboxCellRenderer(props, items, `quantity-${props.row.id}`)
             },
         },
