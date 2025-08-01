@@ -1,19 +1,21 @@
 "use client"
 
 import { ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table"
-import { TableBody, TableRow, TableCell } from "../table"
-import { DataTable } from "./data-table"
-import { useState } from "react"
-import Button from "../button"
+import { TableBody, TableRow, TableCell } from "../../table"
+import { DataTable } from "../../data-table"
+import { useContext, useState } from "react"
+import Button from "../../button"
 import { Plus } from "lucide-react"
 import { useFormatter } from "@/utils/value-formatter"
+import { InvoiceContext } from "@/store/invoice-context"
 
 
 const PrimaryAction = () => {
-    return <Button> <Plus /></Button>
+    const { addRow } = useContext(InvoiceContext)
+    return <Button onClick={addRow}> <Plus /></Button>
 }
 
-export default function ReadonlyDataTable({ data, columns }: { data: any[], columns: any[] }) {
+export default function EditableDataTable({ data, columns }: { data: any[], columns: any[] }) {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})

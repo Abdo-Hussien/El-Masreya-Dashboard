@@ -58,7 +58,7 @@ export function DataTable({ table, filterField, primaryGroup, quickFilters, foot
                 <Table>
                     <TableHeader className="bg-gray-50/80 dark:bg-gray-800">
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow className="hover:bg-transparent" key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>

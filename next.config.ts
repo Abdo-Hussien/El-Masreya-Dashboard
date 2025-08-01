@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
         ]
     },
     i18n: {
-        locales: ['en', 'ar'],
+        locales: ['ar'],
         defaultLocale: 'ar',
     }
 };

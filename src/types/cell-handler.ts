@@ -8,11 +8,6 @@
  * }
  * ```
  */
-export type InputCellHandler = {
+export type CellHandler = {
     activateEditor: () => void
-}
-
-
-export type ComboboxCellHandler = {
-    openPopover: () => void
 }

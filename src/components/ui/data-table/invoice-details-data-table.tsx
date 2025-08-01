@@ -4,24 +4,16 @@
 import { ColumnDef, Getter, Row } from "@tanstack/react-table"
 import { Trash2 } from "lucide-react"
 import Button from "../button"
-import EditableDataTable from "./editable-data-table"
+import EditableDataTable from "./variants/editable-data-table"
 import { InvoiceDetail } from "@/classes/invoice-detail"
 import { CheckboxBox } from "@/components/ui/checkbox-box"
 import { useFormatter } from "@/utils/value-formatter"
-import NewEditableInputCell from "@/app/invoice/editable-input-cell-new"
-import { useRef, useState } from "react"
+import EditableInputCell from "@/app/invoice/editable-input-cell"
+import { useContext, useRef } from "react"
 import EditableComboboxCell from "@/app/invoice/editable-combobox-cell"
 import { ComboboxItem } from "../combobox"
-import { InputCellHandler } from "@/types/cell-handler"
-
-const data: InvoiceDetail[] = [{
-    barcode: "world",
-    quantity: 1,
-    bookTitle: "world",
-    sale: 324,
-    total: 23423,
-    unitPrice: 234
-}]
+import { CellHandler } from "@/types/cell-handler"
+import { InvoiceContext } from "@/store/invoice-context"
 
 type CellRendererProps = {
     row: Row<InvoiceDetail>,
@@ -32,23 +24,11 @@ type CellRendererProps = {
 
 export default function InvoiceDetailsDataTable() {
 
+    const { invoiceDetails, updateRow, deleteRow, updateCell } = useContext(InvoiceContext)
     const { parseNumber, parsePrice } = useFormatter()
+    const cellRefs = useRef<Map<string, CellHandler>>(new Map())
 
-    const [invoiceDetails, setInvoiceDetails] = useState<InvoiceDetail[]>(data)
-
-    const updateCell = (newValue: any, row: Row<InvoiceDetail>, column: ColumnDef<InvoiceDetail>) => {
-        setInvoiceDetails((old) =>
-            old.map((r, i) =>
-                i === row.index
-                    ? { ...r, [column.id as string]: newValue }
-                    : r
-            )
-        )
-    }
-
-    const cellRefs = useRef<Map<string, InputCellHandler>>(new Map())
-
-    const setCellRef = (id: string, node: InputCellHandler | null) => {
+    const setCellRef = (id: string, node: CellHandler | null) => {
         if (node) {
             cellRefs.current.set(id, node)
         } else {
@@ -60,23 +40,22 @@ export default function InvoiceDetailsDataTable() {
         cellRefs.current.get(id)?.activateEditor()
     }
 
-
-    function inputCellRenderer({ row, column, getValue }: CellRendererProps, cellToFocusOn: string, formatter: (value: number | string) => string) {
+    function inputCellRenderer<T = number>({ row, column, getValue }: CellRendererProps, cellToFocusOn: string, formatter: (value: number | string) => string) {
         const id = `${column.id}-${row.id}`
-        const value = getValue();
+        const value = getValue() as T
 
         const onAccepted = (newValue: any) => {
-            updateCell(newValue, row, column);
-            requestAnimationFrame(() => focusCell(cellToFocusOn));
+            updateCell(newValue, row, column)
+            requestAnimationFrame(() => focusCell(cellToFocusOn))
         }
 
-        const validate = (newValue: any): boolean => {
-            if (typeof newValue === "string") return newValue.length > 0 && newValue.length <= 100;
-            if (typeof newValue === "number") return newValue >= 0 && newValue <= 500;
-            return true;
+        const validate = (newValue: unknown): boolean => {
+            const asNumber = Number(newValue)
+            if (Number.isFinite(asNumber)) return asNumber > 0 && asNumber <= 500
+            return false
         }
         return (
-            <NewEditableInputCell id={id} ref={(node: any) => setCellRef(id, node)} initialValue={value} onValueAccepted={onAccepted} validate={validate} formatter={formatter} />
+            <EditableInputCell id={id} ref={(node: any) => setCellRef(id, node)} initialValue={value} onValueAccepted={onAccepted} validate={validate} formatter={formatter} />
         )
     }
 
@@ -87,7 +66,8 @@ export default function InvoiceDetailsDataTable() {
 
         const selected = items.find((v) => v.value == value)
         const onAccepted = (newValue: ComboboxItem) => {
-            updateCell(newValue.value, row, column)
+            // updateCell(newValue.value, row, column)
+            updateRow(row.original.id, new InvoiceDetail())
             requestAnimationFrame(() => {
                 focusCell(cellToFocusOn)
             })
@@ -109,6 +89,7 @@ export default function InvoiceDetailsDataTable() {
         // barcode column
         {
             accessorKey: "barcode", header: "الباركود", cell: (props) => {
+
                 const items = [{ label: "hello", value: "world" }]
                 return comboboxCellRenderer(props, items, `quantity-${props.row.id}`)
             },
@@ -120,30 +101,18 @@ export default function InvoiceDetailsDataTable() {
                 return comboboxCellRenderer(props, items, `quantity-${props.row.id}`)
             },
         },
-        // quantity column
-        {
-            accessorKey: "quantity", header: "العدد", cell: (props) => inputCellRenderer(props, `unitPrice-${props.row.id}`, parseNumber),
-        },
-        // unit price column
-        {
-            accessorKey: "unitPrice", header: "الفئة", cell: (props) => inputCellRenderer(props, `sale-${props.row.id}`, parsePrice),
-        },
-        // sale column
-        {
-            accessorKey: "sale", header: "الخصم", cell: (props) => inputCellRenderer(props, `total-${props.row.id}`, parsePrice),
-        },
-        // total column
-        {
-            accessorKey: "total", header: "المجموع", cell: (props) => inputCellRenderer(props, `none-${props.row.id}`, parsePrice),
-        },
+        { accessorKey: "quantity", header: "العدد", cell: (props) => inputCellRenderer(props, `unitPrice-${props.row.id}`, parseNumber), },
+        { accessorKey: "unitPrice", header: "الفئة", cell: (props) => inputCellRenderer(props, `sale-${props.row.id}`, parsePrice), },
+        { accessorKey: "sale", header: "الخصم", cell: (props) => inputCellRenderer(props, `total-${props.row.id}`, parsePrice), },
+        { accessorKey: "total", header: "المجموع", cell: (props) => inputCellRenderer(props, `none-${props.row.id}`, parsePrice), },
         // actions column
         {
             id: "actions",
             enableHiding: false,
-            cell: () => {
+            cell: ({ row }) => {
                 return (
                     <div className="flex justify-end">
-                        <Button variant="ghost"><Trash2 /></Button>
+                        <Button onClick={() => deleteRow(row.original.id)} className="active:text-red-500 active:bg-red-50" variant="ghost"><Trash2 /></Button>
                     </div>
                 )
             },

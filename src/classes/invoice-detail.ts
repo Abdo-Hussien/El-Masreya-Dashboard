@@ -1,5 +1,8 @@
 
 export class InvoiceDetail {
+
+    private static nextId: number = 0
+    public readonly id: number
     barcode: string
     bookTitle: string
     quantity: number
@@ -8,6 +11,8 @@ export class InvoiceDetail {
     total: number
 
     constructor(barcode?: string, bookTitle?: string, quantity?: number, unitPrice?: number, total?: number, sale?: number) {
+        this.id = InvoiceDetail.nextId
+        InvoiceDetail.nextId++
         this.barcode = barcode || "null"
         this.bookTitle = bookTitle || "null"
         this.quantity = quantity || 1

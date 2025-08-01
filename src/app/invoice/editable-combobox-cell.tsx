@@ -6,7 +6,7 @@ import { Command as CommandPrimitive } from "cmdk"
 import Combobox, { ComboboxItem } from "@/components/ui/combobox"
 import { Mode } from "@/types/mode"
 import { NewEditableCellProps } from "@/types/editable-cell-props"
-import { InputCellHandler } from "@/types/cell-handler"
+import { CellHandler } from "@/types/cell-handler"
 
 type EditableComboboxCellProps = NewEditableCellProps & {
     item?: ComboboxItem
@@ -15,7 +15,7 @@ type EditableComboboxCellProps = NewEditableCellProps & {
 
 
 
-export default forwardRef<InputCellHandler, Omit<React.ComponentProps<typeof CommandPrimitive.Item>, "ref"> & EditableComboboxCellProps>(
+export default forwardRef<CellHandler, Omit<React.ComponentProps<typeof CommandPrimitive.Item>, "ref"> & EditableComboboxCellProps>(
     function EditableComboboxCell({ id, item, items, onValueAccepted, ...props }, ref) {
         const [mode, setMode] = useState<Mode>("read")
         const [selectedItem, setSelectedItem] = useState(item)

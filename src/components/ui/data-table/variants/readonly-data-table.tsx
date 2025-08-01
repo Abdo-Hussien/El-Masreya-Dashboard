@@ -1,6 +1,6 @@
 import { ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table"
-import { TableBody, TableRow, TableCell } from "../table"
-import { DataTable } from "./data-table"
+import { TableBody, TableRow, TableCell } from "../../table"
+import { DataTable } from "../../data-table"
 import { useState } from "react"
 
 export default function ReadonlyDataTable({ data, columns, quickFilters }: { data: any[], columns: any[], quickFilters?: React.ReactNode }) {
@@ -36,7 +36,7 @@ export default function ReadonlyDataTable({ data, columns, quickFilters }: { dat
                             </TableRow>
                         ))
                     ) : (
-                        <TableRow>
+                        <TableRow className="hover:bg-transparent">
                             <TableCell colSpan={columns.length} className="h-24 text-center">No results.</TableCell>
                         </TableRow>
                     )}

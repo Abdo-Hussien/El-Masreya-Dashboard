@@ -1,7 +1,7 @@
 "use client"
 
 import Button from "@/components/ui/button"
-import BooksDataTable from "@/components/ui/DataTable/books-data-table"
+import BooksDataTable from "@/components/ui/data-table/books-data-table"
 import Divider from "@/components/ui/divider"
 import { X } from "lucide-react"
 import { useState } from "react"

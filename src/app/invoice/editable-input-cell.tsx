@@ -1,103 +1,73 @@
-/* eslint-disable react/display-name */
+
 "use client"
 
 import { Input } from "@/components/ui/input"
-import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react"
-import { InputCellHandler } from "@/types/cell-handler"
+import { CellHandler } from "@/types/cell-handler"
+import { NewEditableCellProps } from "@/types/editable-cell-props"
+import { Mode } from "@/types/mode"
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 
-type EditableCellProps<T> = {
-    id: string
-    initialValue: T
-    type?: string
-    onChange: (value: T) => void
-    formatter?: (value: T) => string
-    validate?: (value: T) => boolean
-    onAccept?: (value: T) => void
-}
-
-const EditableInputCell = forwardRef<InputCellHandler, EditableCellProps<any>>(
-    ({ id, initialValue, type = "text", onChange, formatter, validate, onAccept }, ref) => {
-        const [isEditing, setIsEditing] = useState(false)
+export default forwardRef<CellHandler, Omit<React.ComponentProps<"input">, "ref"> & NewEditableCellProps>(
+    function EditableInputCell({ initialValue, onValueAccepted, validate, formatter, ...props }, ref) {
+        const [mode, setMode] = useState<Mode>("read")
         const [value, setValue] = useState(initialValue)
-        const [committedValue, setCommittedValue] = useState(initialValue)
-
         const inputRef = useRef<HTMLInputElement>(null)
 
         useImperativeHandle(ref, () => ({
             activateEditor: () => {
-                setIsEditing(true)
-                setTimeout(() => {
-                    inputRef.current?.focus()
-                    inputRef.current?.select()
-                }, 0)
-            },
+                setMode("write")
+            }
         }))
 
-
-
         useEffect(() => {
+            if (mode === "write") {
+                inputRef.current?.focus()
+                inputRef.current?.select()
+            }
+        }, [mode])
+
+        const save = () => {
+            if (!validate?.(value)) {
+                setValue(initialValue)
+                alert("Validation error...")
+                return
+            }
+            onValueAccepted(value)
+
+            setMode("read")
+        }
+
+        const onDoubleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            e.preventDefault()
+            setMode("write")
+        }
+
+        const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)
+
+        // Accept
+        const handleOnEnter = save
+
+        // Discard
+        const handleOnEscape = () => {
             setValue(initialValue)
-            setCommittedValue(initialValue)
-        }, [initialValue])
+            setMode("read")
+        }
+        const handleOnBlur = handleOnEscape
 
-        useEffect(() => {
-            if (isEditing && inputRef.current) {
-                inputRef.current.focus()
-                inputRef.current.select()
-            }
-        }, [isEditing])
-
-        const save = (next: typeof value, apply: boolean) => {
-            const isValid = validate?.(next) ?? true
-
-            if (!apply || !isValid) {
-                setValue(committedValue)
-            } else {
-                setCommittedValue(next)
-                onChange(next)
-                onAccept?.(next)
-            }
-
-            setIsEditing(false)
+        const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key == "Enter") handleOnEnter()
+            else if (e.key == "Escape") handleOnEscape()
         }
 
-        const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.key === "Enter") {
-                e.preventDefault()
-                save(value, true)
-            } else if (e.key === "Escape") {
-                e.preventDefault()
-                save(value, false)
-            }
-        }
-
-        return isEditing ? (
+        return mode == "write" ? (
             <div className="flex justify-start">
-                <Input
-                    id={id}
-                    ref={inputRef}
-                    variant="plain"
-                    type={type}
-                    value={String(value)}
-                    onChange={(e) =>
-                        setValue(e.target.value as unknown as typeof value)
-                    }
-                    onKeyDown={handleKeyDown}
-                    onBlur={() => save(value, false)}
+                <Input ref={inputRef} variant="plain" value={value} onBlur={handleOnBlur} onChange={handleOnChange} onKeyDown={handleOnKeyDown}
+                    {...props}
                 />
             </div>
         ) : (
-            <div
-                className="cursor-pointer text-right"
-                onDoubleClick={(e) => {
-                    e.preventDefault()
-                    setIsEditing(true)
-                }}
-            >
-                {formatter?.(committedValue) ?? String(committedValue)}
-            </div>
+            <p className="cursor-pointer" onDoubleClick={onDoubleClick}>
+                {formatter?.(value) || value || 'لا يوجد'}
+            </p>
         )
-    }
-)
-
-export default EditableInputCell
+    })
