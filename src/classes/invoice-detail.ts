@@ -10,14 +10,41 @@ export class InvoiceDetail {
     sale: number
     total: number
 
-    constructor(barcode?: string, bookTitle?: string, quantity?: number, unitPrice?: number, total?: number, sale?: number) {
-        this.id = InvoiceDetail.nextId
-        InvoiceDetail.nextId++
-        this.barcode = barcode || "null"
-        this.bookTitle = bookTitle || "null"
-        this.quantity = quantity || 1
-        this.unitPrice = unitPrice || 0
-        this.sale = sale || 0
-        this.total = total || 0
+
+    // overloads
+    constructor(barcode?: string, bookTitle?: string, unitPrice?: number)
+    constructor(
+        barcode?: string,
+        bookTitle?: string,
+        quantity?: number,
+        unitPrice?: number,
+        total?: number,
+        sale?: number
+    )
+    constructor(
+        barcode?: string,
+        bookTitle?: string,
+        a?: number,
+        b?: number,
+        c?: number,
+        d?: number
+    ) {
+        this.id = InvoiceDetail.nextId++
+        this.barcode = barcode ?? ""
+        this.bookTitle = bookTitle ?? ""
+
+        if (b === undefined && c === undefined && d === undefined) {
+            // short form: (barcode, title, unitPrice)
+            this.quantity = 1
+            this.unitPrice = a ?? 0
+            this.total = a ?? 0
+            this.sale = 0
+        } else {
+            // long form
+            this.quantity = a ?? 1
+            this.unitPrice = b ?? 0
+            this.total = c ?? this.unitPrice * this.quantity
+            this.sale = d ?? 0
+        }
     }
 }

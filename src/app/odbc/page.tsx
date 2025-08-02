@@ -18,6 +18,7 @@ export default function ODBC() {
   const [logs, setLogs] = useState<string[]>([])
 
   const log = (msg: string) => setLogs((prev) => [...prev, msg])
+
   const testAll = async () => {
     try {
       log('🔌 Testing connection...')
