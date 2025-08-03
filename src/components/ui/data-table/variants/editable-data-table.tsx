@@ -57,7 +57,7 @@ export default function EditableDataTable({ data, columns }: { data: any[], colu
                     ) : (
                         <TableRow className="hover:bg-transparent">
                             <TableCell colSpan={columns.length} className="text-center h-18">
-                                <p>ابداء باضافة منتج.</p>
+                                <p>ابدأ باضافة منتج.</p>
                             </TableCell>
                         </TableRow>
                     )}

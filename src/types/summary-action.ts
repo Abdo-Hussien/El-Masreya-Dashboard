@@ -1,6 +1,10 @@
+import { InvoiceDetail } from "@/classes/invoice-detail";
 import { SaleFormat } from "./sale-format"
 
 export type SummaryAction =
-    { type: "set sale"; newValue: number; saleFormat: SaleFormat }
-    | { type: "set amount paid"; newValue: number; saleFormat: SaleFormat }
-    | { type: "recalculate totals"; saleFormat: SaleFormat }
+    | { type: "set sale"; newValue: number }
+    | { type: "set amount paid"; newValue: number }
+    | { type: "set sale format"; newFormat: SaleFormat }
+    | { type: "recalculate totals"; invoiceDetails?: InvoiceDetail[] }
+    | { type: "reset" }
+

@@ -4,17 +4,21 @@ import { Book } from "@/types/book"
 import { ColumnDef } from "@tanstack/react-table"
 import Button from "../button"
 import ReadonlyDataTable from "./variants/readonly-data-table"
-
-const data: Book[] = []
+import { useContext } from "react"
+import { BooksContext } from "@/store/book-context"
 
 
 const BooksQuickFilters = () => {
+    const { setFilterSidebarOpen } = useContext(BooksContext)
+    const openSideFilters = () => {
+        setFilterSidebarOpen(true)
+    }
     return (
         <>
             <Button variant="link">
                 مسح الفلاتر
             </Button>
-            <Button variant="outline">
+            <Button onClick={openSideFilters} variant="outline">
                 فلاتر أخرى
             </Button>
         </>
@@ -22,28 +26,32 @@ const BooksQuickFilters = () => {
 }
 
 export default function BooksDataTable() {
+    const { books } = useContext(BooksContext)
 
     const columns: ColumnDef<Book>[] = [
         {
             accessorKey: "bookTitle",
             header: () => "السلعة",
-            cell: ({ row }) => {
-                const bookTitle = Number(row.getValue("bookTitle"))
-                return <div className="text-right font-medium">{bookTitle}</div>
+            cell: ({ getValue }) => {
+                const bookTitle = getValue() as string
+                return <div className="text-right">{bookTitle}</div>
             },
         },
         {
-            accessorKey: "unitPrice",
+            accessorKey: "wholesalePrice",
             header: "فئة",
-            cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("unitPrice")}</div>
-            ),
+            cell: ({ getValue }) => {
+                const unitPrice = getValue() as number
+                return <div className="capitalize">{unitPrice}</div>
+            },
         },
         {
             accessorKey: "price", //with discount
-
             header: 'السعر',
-            cell: ({ row }) => <div className="lowercase">{row.getValue("price")}</div>,
+            cell: ({ getValue }) => {
+                const price = getValue() as number
+                return <div className="lowercase">{price}</div>
+            },
         },
         {
             accessorKey: "quantityInStock",
@@ -51,7 +59,7 @@ export default function BooksDataTable() {
             cell: ({ row }) => {
                 const quantityInStock = Number(row.getValue("quantityInStock"))
 
-                return <div className="text-right font-medium">{quantityInStock}</div>
+                return <div className="text-right">{quantityInStock}</div>
             },
         },
         {
@@ -59,13 +67,13 @@ export default function BooksDataTable() {
             header: () => "القطع",
             cell: ({ row }) => {
                 const quantityPerPack = Number(row.getValue("quantityPerPack"))
-                return <div className="text-right font-medium">{quantityPerPack}</div>
+                return <div className="text-right">{quantityPerPack}</div>
             },
         }
     ]
     return (
         <>
-            <ReadonlyDataTable data={data} columns={columns} quickFilters={<BooksQuickFilters />} />
+            <ReadonlyDataTable data={books} columns={columns} quickFilters={<BooksQuickFilters />} />
         </>
     )
 }

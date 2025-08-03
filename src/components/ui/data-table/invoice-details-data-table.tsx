@@ -1,7 +1,7 @@
 
 "use client"
 
-import { ColumnDef, Getter, Row } from "@tanstack/react-table"
+import { ColumnDef, Getter, Row, Table } from "@tanstack/react-table"
 import { Trash2 } from "lucide-react"
 import Button from "../button"
 import EditableDataTable from "./variants/editable-data-table"
@@ -14,11 +14,13 @@ import EditableComboboxCell from "@/components/ui/cells/editable-combobox-cell"
 import { ComboboxItem } from "../combobox"
 import { CellHandler } from "@/types/cell-handler"
 import { InvoiceContext } from "@/store/invoice-context"
-import { Book } from "@/types/book"
+import { BooksContext } from "@/store/book-context"
+import { Badge } from "../badge"
 
 type CellRendererProps = {
     row: Row<InvoiceDetail>,
     column: ColumnDef<InvoiceDetail>,
+    table: Table<InvoiceDetail>
     getValue: Getter<unknown>
 }
 
@@ -36,43 +38,16 @@ type FormatterFunction = (value: number | string) => string
 
 
 export default function InvoiceDetailsDataTable() {
-
-
-    const globalBooks: Book[] = [
-        {
-            bookTitle: "Book1",
-            id: "224253579345",
-            price: 400,
-            quantityInStock: 43,
-            quantityPerPack: 67,
-            wholesalePrice: 345
-        },
-        {
-            bookTitle: "Book2",
-            id: "953579657",
-            price: 500,
-            quantityInStock: 43,
-            quantityPerPack: 67,
-            wholesalePrice: 345
-        },
-        {
-            bookTitle: "Book3",
-            id: "3524253572342",
-            price: 237,
-            quantityInStock: 43,
-            quantityPerPack: 67,
-            wholesalePrice: 345
-        }
-
-    ]
-    const { invoiceDetails, updateRow, deleteRow, updateCell } = useContext(InvoiceContext)
+    const { books } = useContext(BooksContext)
+    const { invoiceDetails, addRow, updateRow, deleteRow, updateCell } = useContext(InvoiceContext)
     const { parseNumber, parsePrice } = useFormatter()
     const cellRefs = useRef<Map<string, CellHandler>>(new Map())
 
     const setCellRef = (id: string, node: CellHandler | null) => {
         if (node) {
             cellRefs.current.set(id, node)
-        } else {
+        }
+        else {
             cellRefs.current.delete(id)
         }
     }
@@ -84,7 +59,7 @@ export default function InvoiceDetailsDataTable() {
     // ---------- Input Cell Renderer ----------
 
     function inputCellRenderer<T = number>(
-        { row, column, getValue }: CellRendererProps,
+        { row, column, getValue, table }: CellRendererProps,
         cellToFocusOn: string,
         formatter: FormatterFunction,
         maxInputSize: number,
@@ -99,6 +74,13 @@ export default function InvoiceDetailsDataTable() {
                 updateCallback(newValue)
             } else {
                 updateCell(newValue, row, column)
+            }
+            const isLastRowBarcode =
+                cellToFocusOn.includes("barcode") &&
+                cellToFocusOn.includes(`${table.getRowModel().rows.length}`)
+
+            if (isLastRowBarcode) {
+                addRow();
             }
             requestAnimationFrame(() => focusCell(cellToFocusOn))
         }
@@ -123,7 +105,7 @@ export default function InvoiceDetailsDataTable() {
     // ---------- Combobox Cell Renderer ----------
 
     function comboboxCellRenderer(
-        { row, column, getValue }: CellRendererProps,
+        { row, column, getValue, table }: CellRendererProps,
         items: ComboboxItem[],
         cellToFocusOn: string
     ) {
@@ -132,7 +114,7 @@ export default function InvoiceDetailsDataTable() {
         const selected = items.find((item) => item.label === currentLabel)
 
         const onAccepted = (newValue: ComboboxItem) => {
-            const selectedBook = globalBooks.find(
+            const selectedBook = books.find(
                 (b) => String(b.id) === String(newValue.value)
             )
 
@@ -143,6 +125,14 @@ export default function InvoiceDetailsDataTable() {
 
             updateRow(row.original.id, invoiceDetail)
 
+            const isLastRowBarcode =
+                cellToFocusOn.includes("barcode") &&
+                cellToFocusOn.includes(`${table.getRowModel().rows.length}`)
+
+            if (isLastRowBarcode) {
+                addRow();
+            }
+            console.log(cellRefs, cellToFocusOn)
             requestAnimationFrame(() => focusCell(cellToFocusOn))
         }
 
@@ -161,20 +151,40 @@ export default function InvoiceDetailsDataTable() {
 
     const columns: ColumnDef<InvoiceDetail>[] = [
         // select column
+
         {
             id: "select",
             enableSorting: false,
             enableHiding: false,
-            header: ({ table }) => (
-                <CheckboxBox
-                    checked={
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && "indeterminate")
-                    }
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
-                />
-            ),
+            header: ({ table }) => {
+                const selectedRows = table.getSelectedRowModel().rows
+
+                return (
+                    <div className="flex items-center gap-2">
+                        <CheckboxBox
+                            checked={
+                                table.getIsAllPageRowsSelected() ||
+                                (table.getIsSomePageRowsSelected() && "indeterminate")
+                            }
+                            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                            aria-label="Select all"
+                        />
+
+                        {selectedRows.length > 0 && (
+                            <Badge
+                                variant="destructive"
+                                className="h-5 min-w-5 rounded-full px-1 tabular-nums"
+                                onClick={() => {
+                                    selectedRows.forEach((row) => deleteRow(row.original.id))
+                                    table.resetRowSelection()
+                                }}>
+                                <Trash2 className="h-3 w-3" />
+                                <span>-&thinsp;{parseNumber(selectedRows.length)}</span>
+                            </Badge>
+                        )}
+                    </div>
+                )
+            },
             cell: ({ row }) => (
                 <CheckboxBox
                     checked={row.getIsSelected()}
@@ -189,11 +199,11 @@ export default function InvoiceDetailsDataTable() {
             accessorKey: "barcode",
             header: "الباركود",
             cell: (props) => {
-                const items: ComboboxItem[] = globalBooks.map((b) => ({
+                const items: ComboboxItem[] = books.map((b) => ({
                     label: b.id,
                     value: b.id,
                 }))
-                return comboboxCellRenderer(props, items, `quantity-${props.row.id}`)
+                return comboboxCellRenderer(props, items, `barcode-${Number(props.row.id) + 1}`)
             },
         },
 
@@ -202,7 +212,7 @@ export default function InvoiceDetailsDataTable() {
             accessorKey: "bookTitle",
             header: "اسم المنتج",
             cell: (props) => {
-                const items: ComboboxItem[] = globalBooks.map((b) => ({
+                const items: ComboboxItem[] = books.map((b) => ({
                     label: b.bookTitle,
                     value: b.id,
                 }))
@@ -216,14 +226,15 @@ export default function InvoiceDetailsDataTable() {
             header: "العدد",
             cell: (props) => {
                 const onUpdate: UpdateCallback<number> = (newValue) => {
-                    const newTotal = newValue * props.row.original.unitPrice
+                    const { sale, unitPrice } = props.row.original
+                    const newTotal = newValue * unitPrice - sale
                     updateRow(props.row.original.id, {
                         ...props.row.original,
                         quantity: newValue,
                         total: newTotal,
                     })
                 }
-                return inputCellRenderer(props, `unitPrice-${props.row.id}`, parseNumber, 500, onUpdate)
+                return inputCellRenderer(props, `barcode-${Number(props.row.id) + 1}`, parseNumber, 500, onUpdate)
             },
         },
 
@@ -233,7 +244,8 @@ export default function InvoiceDetailsDataTable() {
             header: "الفئة",
             cell: (props) => {
                 const onUpdate: UpdateCallback<number> = (newValue) => {
-                    const newTotal = props.row.original.quantity * newValue
+                    const { sale, quantity } = props.row.original
+                    const newTotal = quantity * newValue - sale
                     updateRow(props.row.original.id, {
                         ...props.row.original,
                         unitPrice: newValue,
@@ -275,11 +287,7 @@ export default function InvoiceDetailsDataTable() {
             enableHiding: false,
             cell: ({ row }) => (
                 <div className="flex justify-end">
-                    <Button
-                        onClick={() => deleteRow(row.original.id)}
-                        className="active:text-red-500 active:bg-red-50"
-                        variant="ghost"
-                    >
+                    <Button onClick={() => deleteRow(row.original.id)} className="active:text-red-500 active:bg-red-50" variant="ghost">
                         <Trash2 />
                     </Button>
                 </div>
