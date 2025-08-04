@@ -3,7 +3,6 @@ import CardItem from "@/components/ui/cards/card-item"
 import Divider from "@/components/ui/divider"
 import { SummaryLine, SaleSummaryLine, AmountPaidSummaryLine } from "@/components/ui/summary/summary-lines"
 import { InvoiceContext } from "@/store/invoice-context"
-import { SaleFormat } from "@/types/sale-format"
 import { useFormatter } from "@/utils/value-formatter"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useContext, useState, useEffect } from "react"
@@ -12,7 +11,6 @@ export default function InvoiceSummary() {
 
     const { summaryFields, execute } = useContext(InvoiceContext)
     const { parsePrice } = useFormatter()
-    const [saleFormat, setSaleFormat] = useState<SaleFormat>('percentage')
 
     const [isPaid, setIsPaid] = useState(false)
 
@@ -22,10 +20,10 @@ export default function InvoiceSummary() {
 
     // This `useEffect` callback activates two times in a row
     useEffect(() => {
-        console.log("From useEffect: ")
+        // console.log("From useEffect: ")
         if (isPaid) execute({ type: "set amount paid", newValue: summaryFields.total })
     },
-        [execute, isPaid, saleFormat, summaryFields.total])
+        [execute, isPaid, summaryFields.total])
 
 
     return (
