@@ -1,22 +1,16 @@
+// src/db/invoice-db.ts
+import Dexie, { Table } from "dexie";
+import { InvoiceDetail } from "@/classes/invoice-detail";
 
-import Dexie, { Table } from 'dexie'
-import { TableState } from '@tanstack/react-table'
-
-export interface StoredTableState {
-    id: string
-    state: TableState | null
-}
-
-class InvoiceDetailsTableDB extends Dexie {
-    tableState!: Table<StoredTableState>
+export class InvoiceDB extends Dexie {
+    invoiceDetails!: Table<InvoiceDetail, number>;
 
     constructor() {
-        super('InvoiceDetailsTable')
+        super("InvoiceDetailsDB");
         this.version(1).stores({
-            tableState: 'id, state',
-        })
+            invoiceDetails: "++id, barcode, bookTitle, quantity, total"
+        });
     }
 }
 
-const indexedDb = new InvoiceDetailsTableDB()
-export default indexedDb
+export const db = new InvoiceDB();
