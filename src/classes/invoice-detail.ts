@@ -1,8 +1,5 @@
-
 export class InvoiceDetail {
-
-    private static nextId: number = 0
-    public readonly id: number
+    id?: number
     barcode: string
     bookTitle: string
     quantity: number
@@ -22,22 +19,21 @@ export class InvoiceDetail {
         sale?: number
     )
     constructor(
-        barcode?: string,
-        bookTitle?: string,
+        barcode: string = "",
+        bookTitle: string = "",
         a?: number,
         b?: number,
         c?: number,
         d?: number
     ) {
-        this.id = InvoiceDetail.nextId++
-        this.barcode = barcode ?? ""
-        this.bookTitle = bookTitle ?? ""
+        this.barcode = barcode
+        this.bookTitle = bookTitle
 
         if (b === undefined && c === undefined && d === undefined) {
             // short form: (barcode, title, unitPrice)
             this.quantity = 1
             this.unitPrice = a ?? 0
-            this.total = a ?? 0
+            this.total = this.unitPrice
             this.sale = 0
         } else {
             // long form

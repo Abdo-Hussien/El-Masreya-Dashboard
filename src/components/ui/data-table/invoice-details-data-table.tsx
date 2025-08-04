@@ -82,7 +82,7 @@ export default function InvoiceDetailsDataTable() {
             if (isLastRowBarcode) {
                 addRow();
             }
-            requestAnimationFrame(() => focusCell(cellToFocusOn))
+            setTimeout(() => focusCell(cellToFocusOn), 100)
         }
 
         const validate = (newValue: unknown): boolean => {
@@ -123,7 +123,7 @@ export default function InvoiceDetailsDataTable() {
             const { id: barcode, bookTitle, price } = selectedBook
             const invoiceDetail = new InvoiceDetail(barcode, bookTitle, price)
 
-            updateRow(row.original.id, invoiceDetail)
+            updateRow(row.original.id!, invoiceDetail)
 
             const isLastRowBarcode =
                 cellToFocusOn.includes("barcode") &&
@@ -132,8 +132,8 @@ export default function InvoiceDetailsDataTable() {
             if (isLastRowBarcode) {
                 addRow();
             }
-            console.log(cellRefs, cellToFocusOn)
-            requestAnimationFrame(() => focusCell(cellToFocusOn))
+            // console.log(cellRefs, cellToFocusOn)
+            setTimeout(() => focusCell(cellToFocusOn), 500)
         }
 
         return (
@@ -175,7 +175,7 @@ export default function InvoiceDetailsDataTable() {
                                 variant="destructive"
                                 className="h-5 min-w-5 rounded-full px-1 tabular-nums"
                                 onClick={() => {
-                                    selectedRows.forEach((row) => deleteRow(row.original.id))
+                                    selectedRows.forEach((row) => deleteRow(row.original.id!))
                                     table.resetRowSelection()
                                 }}>
                                 <Trash2 className="h-3 w-3" />
@@ -228,7 +228,7 @@ export default function InvoiceDetailsDataTable() {
                 const onUpdate: UpdateCallback<number> = (newValue) => {
                     const { sale, unitPrice } = props.row.original
                     const newTotal = newValue * unitPrice - sale
-                    updateRow(props.row.original.id, {
+                    updateRow(props.row.original.id!, {
                         ...props.row.original,
                         quantity: newValue,
                         total: newTotal,
@@ -246,7 +246,7 @@ export default function InvoiceDetailsDataTable() {
                 const onUpdate: UpdateCallback<number> = (newValue) => {
                     const { sale, quantity } = props.row.original
                     const newTotal = quantity * newValue - sale
-                    updateRow(props.row.original.id, {
+                    updateRow(props.row.original.id!, {
                         ...props.row.original,
                         unitPrice: newValue,
                         total: newTotal,
@@ -264,7 +264,7 @@ export default function InvoiceDetailsDataTable() {
                 const onUpdate: UpdateCallback<number> = (newValue) => {
                     const { quantity, unitPrice } = props.row.original
                     const newTotal = quantity * unitPrice - newValue
-                    updateRow(props.row.original.id, {
+                    updateRow(props.row.original.id!, {
                         ...props.row.original,
                         sale: newValue,
                         total: newTotal,
@@ -287,7 +287,7 @@ export default function InvoiceDetailsDataTable() {
             enableHiding: false,
             cell: ({ row }) => (
                 <div className="flex justify-end">
-                    <Button onClick={() => deleteRow(row.original.id)} className="active:text-red-500 active:bg-red-50" variant="ghost">
+                    <Button onClick={() => deleteRow(row.original.id!)} className="active:text-red-500 active:bg-red-50" variant="ghost">
                         <Trash2 />
                     </Button>
                 </div>

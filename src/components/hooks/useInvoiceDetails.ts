@@ -1,8 +1,10 @@
+// src/hooks/useInvoiceDetails.ts
 import { useState, useReducer, useEffect, useCallback } from "react"
 import { Row, ColumnDef } from "@tanstack/react-table"
 import { InvoiceDetail } from "@/classes/invoice-detail"
 import { SummaryFields, SummaryFieldsBuilder } from "@/types/summary-fields"
 import { SummaryAction } from "@/types/summary-action"
+import { db } from "@/lib/indexed-db"
 
 // Reducer for summary calculations
 function summaryReducer(state: SummaryFields, action: SummaryAction): SummaryFields {
@@ -39,14 +41,8 @@ function summaryReducer(state: SummaryFields, action: SummaryAction): SummaryFie
     return { ...newState, total, finalTotal }
 }
 
-// Custom hook for invoice logic
 export function useInvoiceDetails() {
-    const [invoiceDetails, setInvoiceDetails] = useState<InvoiceDetail[]>([
-        new InvoiceDetail(),
-        new InvoiceDetail(),
-        new InvoiceDetail()
-    ])
-
+    const [invoiceDetails, setInvoiceDetails] = useState<InvoiceDetail[]>([])
     const initialSummaryFields = new SummaryFieldsBuilder()
         .setSubTotal(0)
         .setSale(0)
@@ -55,47 +51,76 @@ export function useInvoiceDetails() {
 
     const [summaryFields, execute] = useReducer(summaryReducer, initialSummaryFields)
 
+    // Load invoices from IndexedDB when mounted
+    useEffect(() => {
+        const loadFromDb = async () => {
+            const all = await db.invoiceDetails.toArray();
+            if (all.length > 0) {
+                setInvoiceDetails(all);
+            } else {
+                const id = await db.invoiceDetails.add(new InvoiceDetail());
+                const row = await db.invoiceDetails.get(id);
+                setInvoiceDetails(row ? [row] : []);
+            }
+        };
+        loadFromDb()
+    }, [])
+
+    // Update totals when invoiceDetails change
     useEffect(() => {
         execute({ type: "recalculate totals", invoiceDetails })
     }, [invoiceDetails])
 
-    const addRow = useCallback(() => {
-        setInvoiceDetails((prev) => [...prev, new InvoiceDetail()])
+    const addRow = useCallback(async () => {
+        const newRow = new InvoiceDetail()
+        const id = await db.invoiceDetails.add(newRow)
+        console.log(id)
+        setInvoiceDetails((prev) => [...prev, { ...newRow, id }])
     }, [])
 
-    const updateRow = useCallback((rowId: number, updatedRow: InvoiceDetail) => {
+    const updateRow = useCallback(async (rowId: number, updatedRow: InvoiceDetail) => {
+        await db.invoiceDetails.update(rowId, updatedRow)
         setInvoiceDetails((prev) =>
-            prev.map((inv) => (inv.id === rowId ? updatedRow : inv))
+            prev.map((inv) => (inv.id === rowId ? { ...updatedRow, id: rowId } : inv))
         )
     }, [])
 
-    const deleteRow = useCallback((rowId: number) => {
+    const deleteRow = useCallback(async (rowId: number) => {
+        await db.invoiceDetails.delete(rowId)
         setInvoiceDetails((prev) => prev.filter((inv) => inv.id !== rowId))
     }, [])
 
-    const resetForm = useCallback(() => {
-        setInvoiceDetails([])
-        execute({ type: "reset" })
-    }, [])
+    const resetForm = useCallback(async () => {
+        await db.invoiceDetails.clear();
+        const id = await db.invoiceDetails.add(new InvoiceDetail());
+        const row = await db.invoiceDetails.get(id);
+        setInvoiceDetails(row ? [row] : []);
+        execute({ type: "reset" });
+    }, []);
 
-    const updateCell = useCallback((
-        newValue: any,
-        row: Row<InvoiceDetail>,
-        column: ColumnDef<InvoiceDetail>
-    ) => {
-        setInvoiceDetails((old) =>
-            old.map((r, i) =>
-                i === row.index ? { ...r, [column.id as string]: newValue } : r
+    const updateCell = useCallback(
+        async (newValue: any, row: Row<InvoiceDetail>, column: ColumnDef<InvoiceDetail>) => {
+            const rowId = row.original.id
+            if (!rowId) return
+
+            const updatedRow = { ...row.original, [column.id as string]: newValue }
+            await db.invoiceDetails.update(rowId, updatedRow)
+
+            setInvoiceDetails((old) =>
+                old.map((r, i) => (i === row.index ? { ...updatedRow, id: rowId } : r))
             )
-        )
-    }, [])
+        },
+        []
+    )
 
-    const getNumOfBooks = useCallback(() =>
-        invoiceDetails
-            .filter((detail) => detail.barcode || detail.bookTitle)
-            .map((detail) => Number(detail?.quantity) || 0)
-            .reduce((acc, quantity) => acc + quantity, 0)
-        , [invoiceDetails])
+    const getNumOfBooks = useCallback(
+        () =>
+            invoiceDetails
+                .filter((detail) => detail.barcode || detail.bookTitle)
+                .map((detail) => Number(detail?.quantity) || 0)
+                .reduce((acc, quantity) => acc + quantity, 0),
+        [invoiceDetails]
+    )
 
     return {
         invoiceDetails,
