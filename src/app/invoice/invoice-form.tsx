@@ -6,11 +6,15 @@ import CardItem from "@/components/ui/cards/card-item"
 import InvoiceActions from "./invoice-actions"
 import InvoiceFields from "./invoice-fields"
 import InvoiceDetailsDataTable from "@/components/ui/data-table/invoice-details-data-table"
+import { useContext } from "react"
+import { InvoiceContext } from "@/store/invoice-context"
 
 
 export default function InvoiceForm() {
 
-    const { parseDate } = useFormatter()
+    const { parseDate, parseNumber } = useFormatter()
+    const { getNumOfBooks } = useContext(InvoiceContext)
+
 
     const currentDate = parseDate(new Date())
     return (
@@ -19,7 +23,7 @@ export default function InvoiceForm() {
             <div className="flex flex-col grow basis-1/6 space-y-12 p-4">
                 <div id="inv-title-actions" className="flex">
                     <CardItem id="inv-text" title="نموذج الفاتورة" subtitle={currentDate}>
-                        <span className="font-bold text-sm">٥ كتب</span>
+                        <span className="font-bold text-sm">{`${parseNumber(getNumOfBooks())} كتب`}</span>
                     </CardItem>
                     <InvoiceActions />
                 </div>

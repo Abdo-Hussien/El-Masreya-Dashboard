@@ -33,7 +33,8 @@ export default function ODBC() {
 
       setStep('create-customer')
       log('📤 Creating test customer...')
-      const createRes = await axios.post('/api/customer', { DisplayName: 'mohamedhussien._', CustomerName: 'Mohamed Hussien', Area: 'Heliopolis', City: 'Cairo' })
+      // DisplayName has a unique constraint
+      const createRes = await axios.post('/api/customer', { DisplayName: 'mohamedhussien_', CustomerName: 'MohamedHuss', Area: 'Heliopolis', City: 'Cairo' })
       const customerId = createRes.data.id
       log('Customer created.')
 

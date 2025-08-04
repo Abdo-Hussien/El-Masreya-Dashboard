@@ -23,7 +23,7 @@ export default function InvoiceSummary() {
     // This `useEffect` callback activates two times in a row
     useEffect(() => {
         console.log("From useEffect: ")
-        if (isPaid) execute({ type: "set amount paid", newValue: summaryFields.total, saleFormat, })
+        if (isPaid) execute({ type: "set amount paid", newValue: summaryFields.total })
     },
         [execute, isPaid, saleFormat, summaryFields.total])
 
@@ -35,9 +35,9 @@ export default function InvoiceSummary() {
                 <div className="flex py-4 h-full justify-center flex-col items-center gap-2">
 
                     <SummaryLine label="المجموع" formatter={parsePrice} value={summaryFields.subTotal} />
-                    <SaleSummaryLine format={saleFormat} setFormat={setSaleFormat} value={summaryFields.sale} onChange={execute} />
+                    <SaleSummaryLine />
                     <SummaryLine label="صافي المجموع" formatter={parsePrice} value={summaryFields.total} />
-                    <AmountPaidSummaryLine format={saleFormat} value={summaryFields.amountPaid} onChange={execute} />
+                    <AmountPaidSummaryLine />
                     <SummaryLine label="المجموع النهائي" formatter={parsePrice} value={summaryFields.finalTotal} valueStyle="font-bold" />
 
                 </div>

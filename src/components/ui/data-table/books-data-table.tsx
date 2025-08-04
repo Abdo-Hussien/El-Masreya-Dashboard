@@ -10,9 +10,7 @@ import { BooksContext } from "@/store/book-context"
 
 const BooksQuickFilters = () => {
     const { setFilterSidebarOpen } = useContext(BooksContext)
-    const openSideFilters = () => {
-        setFilterSidebarOpen(true)
-    }
+    const openSideFilters = () => setFilterSidebarOpen(true)
     return (
         <>
             <Button variant="link">

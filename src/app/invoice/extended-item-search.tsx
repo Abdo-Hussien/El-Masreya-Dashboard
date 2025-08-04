@@ -3,13 +3,16 @@
 import Button from "@/components/ui/button"
 import BooksDataTable from "@/components/ui/data-table/books-data-table"
 import Divider from "@/components/ui/divider"
+import FiltersSidebar from "@/components/ui/sidebars/filters-sidebar"
+import { BooksContext } from "@/store/book-context"
 import { X } from "lucide-react"
-import { useState } from "react"
+import { useContext, useState } from "react"
 
 
 export default function ExtendedItemSearch() {
     const [isDialogOpen, setDialogOpen] = useState<boolean>(false)
 
+    const { isFilterSidebarOpen, setFilterSidebarOpen } = useContext(BooksContext)
 
     const openDialog = () => setDialogOpen(true)
     const closeDialog = () => setDialogOpen(false)
@@ -31,6 +34,7 @@ export default function ExtendedItemSearch() {
                     <BooksDataTable />
                 </div>
             </div>
+            <FiltersSidebar open={isFilterSidebarOpen} onClose={() => setFilterSidebarOpen(false)} />
         </>
     )
 }
