@@ -42,7 +42,7 @@ export default forwardRef<CellHandler, Omit<React.ComponentProps<"input">, "ref"
             setMode("write")
         }
 
-        const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)
+        const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(Number(e.target.value))
 
         // Accept
         const handleOnEnter = save
