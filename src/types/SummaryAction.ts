@@ -1,4 +1,4 @@
-import { InvoiceDetail } from "@/classes/invoice-detail";
+import { InvoiceDetail } from "@/classes/InvoiceDetail";
 
 export type SummaryAction =
     | { type: "set sale"; newValue: number }

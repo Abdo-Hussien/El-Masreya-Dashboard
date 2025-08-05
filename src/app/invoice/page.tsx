@@ -2,11 +2,11 @@
 
 // import useGrid from "@/components/hooks/useGrid"
 
-import InvoiceForm from "./invoice-form"
-import ExtendedItemSearch from "./extended-item-search";
+import InvoiceForm from "./InvoiceForm"
+import ExtendedItemSearch from "./ExtendedItemSearch";
 import InvoiceContextProvider from "@/store/invoice-context";
 import BooksContextProvider from "@/store/book-context";
-import InvoiceSummary from "./invoice-summary";
+import InvoiceSummary from "./InvoiceSummary";
 
 export default function InvoicePage() {
     return (

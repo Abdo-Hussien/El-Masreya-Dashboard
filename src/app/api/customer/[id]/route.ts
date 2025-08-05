@@ -7,7 +7,7 @@ export async function GET(
     { params }: { params: { id: string } }
 ) {
     try {
-        const { getODBC } = await import('@/lib/sql-server-db');
+        const { getODBC } = await import('@/lib/OdbcDb');
         const conn = await getODBC();
         const result = await conn.query(`SELECT * FROM Customers WHERE CustomerID = ${params.id}`);
         await conn.close();
@@ -27,7 +27,7 @@ export async function PUT(
         const body = await request.json();
         const { DisplayName, CustomerName, Area } = body;
 
-        const { getODBC } = await import('@/lib/sql-server-db');
+        const { getODBC } = await import('@/lib/OdbcDb');
         const conn = await getODBC();
         const query = `
             UPDATE Customers 
@@ -49,7 +49,7 @@ export async function DELETE(
     { params }: { params: { id: string } }
 ) {
     try {
-        const { getODBC } = await import('@/lib/sql-server-db');
+        const { getODBC } = await import('@/lib/OdbcDb');
         const conn = await getODBC();
         await conn.query(`DELETE FROM Customers WHERE CustomerID = ${params.id}`);
         await conn.close();

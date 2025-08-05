@@ -4,19 +4,19 @@
 import { ColumnDef, Getter, Row, Table } from "@tanstack/react-table"
 import { Trash2 } from "lucide-react"
 import Button from "../button"
-import EditableDataTable from "./variants/editable-data-table"
-import { InvoiceDetail } from "@/classes/invoice-detail"
+import EditableDataTable from "./variants/EditableDataTable"
+import { InvoiceDetail } from "@/classes/InvoiceDetail"
 import { CheckboxBox } from "@/components/ui/checkbox-box"
 import { parseNumber, parsePrice } from "@/utils/value-formatter"
-import EditableInputCell from "@/components/ui/cells/editable-input-cell"
+import EditableInputCell from "@/components/ui/cells/EditableInputCell"
 import { useContext, useRef } from "react"
-import EditableComboboxCell from "@/components/ui/cells/editable-combobox-cell"
+import EditableComboboxCell from "@/components/ui/cells/EditableComboboxCell"
 import { ComboboxItem } from "../combobox"
-import { CellHandler } from "@/types/cell-handler"
+import { CellHandler } from "@/types/CellHandler"
 import { InvoiceContext } from "@/store/invoice-context"
 import { BooksContext } from "@/store/book-context"
 import { Badge } from "../badge"
-import { DataTableSkeletonRow } from "../loaders/data-table-skeleton-row"
+import { DataTableSkeletonRow } from "../loaders/DataTableSkeletonRow"
 
 type CellRendererProps = {
     row: Row<InvoiceDetail>,
@@ -92,7 +92,7 @@ export default function InvoiceDetailsDataTable() {
             if (isLastRowBarcode) {
                 addRow();
             }
-            setTimeout(() => focusCell(cellToFocusOn), 100)
+            setTimeout(() => requestAnimationFrame(() => focusCell(cellToFocusOn)), 800)
         }
 
         const validate = (newValue: number): boolean => {
@@ -143,7 +143,7 @@ export default function InvoiceDetailsDataTable() {
                 addRow();
             }
             // console.log(cellRefs, cellToFocusOn)
-            setTimeout(() => focusCell(cellToFocusOn), 500)
+            setTimeout(() => requestAnimationFrame(() => focusCell(cellToFocusOn)), 800)
         }
 
         return (

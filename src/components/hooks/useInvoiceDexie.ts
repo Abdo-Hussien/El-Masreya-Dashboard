@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
-import { db } from "@/lib/indexed-db";
-import { InvoiceDetail } from "@/classes/invoice-detail";
+import { db } from "@/lib/DexieDb";
+import { InvoiceDetail } from "@/classes/InvoiceDetail";
 
 export function useInvoiceDexie() {
     const [savedInvoices, setSavedInvoices] = useState<InvoiceDetail[]>([]);

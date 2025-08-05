@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
     try {
-        const { getODBC } = await import('@/lib/sql-server-db');
+        const { getODBC } = await import('@/lib/OdbcDb');
         const conn = await getODBC();
         const data = await conn.query('SELECT * FROM Customers');
         await conn.close();
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { DisplayName, CustomerName, Area, City } = body;
 
-        const { getODBC } = await import('@/lib/sql-server-db');
+        const { getODBC } = await import('@/lib/OdbcDb');
         const conn = await getODBC();
 
         const insertSql = `INSERT INTO Customers (DisplayName, CustomerName, Area, City) VALUES ('${DisplayName}', '${CustomerName}', '${Area}', '${City}')`

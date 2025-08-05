@@ -1,9 +1,9 @@
 "use client"
 
-import { Book } from "@/types/book"
+import { Book } from "@/types/Book"
 import { ColumnDef } from "@tanstack/react-table"
 import Button from "../button"
-import ReadonlyDataTable from "./variants/readonly-data-table"
+import ReadonlyDataTable from "./variants/ReadonlyDataTable"
 import { useContext } from "react"
 import { BooksContext } from "@/store/book-context"
 

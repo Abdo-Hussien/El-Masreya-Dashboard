@@ -2,13 +2,13 @@
 "use client"
 import { parseNumber } from "@/utils/value-formatter"
 import Divider from "@/components/ui/divider"
-import CardItem from "@/components/ui/cards/card-item"
-import InvoiceActions from "./invoice-actions"
-import InvoiceFields from "./invoice-fields"
-import InvoiceDetailsDataTable from "@/components/ui/data-table/invoice-details-data-table"
+import CardItem from "@/components/ui/cards/CardItem"
+import InvoiceActions from "./InvoiceActions"
+import InvoiceFields from "./InvoiceFields"
+import InvoiceDetailsDataTable from "@/components/ui/data-table/InvoiceDetailsDataTable"
 import { useContext, useEffect, useState } from "react"
 import { InvoiceContext } from "@/store/invoice-context"
-import { db } from "@/lib/indexed-db"
+import { db } from "@/lib/DexieDb"
 
 const IndexedDBSync = ({ isSynced, setIsSynced }: { isSynced: boolean, setIsSynced: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
@@ -21,13 +21,10 @@ const IndexedDBSync = ({ isSynced, setIsSynced }: { isSynced: boolean, setIsSync
             }
 
             try {
-                unsub = (changes: any) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                unsub = (_changes: any) => {
                     setIsSynced(false)
-
-                    // Simulate sync delay
-                    setTimeout(() => {
-                        setIsSynced(true)
-                    }, 300)
+                    setTimeout(() => setIsSynced(true), 50)
                 }
 
                 db.on("changes", unsub)
@@ -35,12 +32,12 @@ const IndexedDBSync = ({ isSynced, setIsSynced }: { isSynced: boolean, setIsSync
                 console.error("[IndexedDBSync] Failed to load dexie-observable:", err)
             }
         })()
-
         return () => {
             if (unsub) {
                 db.on("changes").unsubscribe(unsub)
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

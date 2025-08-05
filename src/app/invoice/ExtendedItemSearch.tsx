@@ -1,9 +1,9 @@
 "use client"
 
 import Button from "@/components/ui/button"
-import BooksDataTable from "@/components/ui/data-table/books-data-table"
+import BooksDataTable from "@/components/ui/data-table/BooksDataTable"
 import Divider from "@/components/ui/divider"
-import FiltersSidebar from "@/components/ui/sidebars/filters-sidebar"
+import FiltersSidebar from "@/components/ui/sidebars/FiltersSidebar"
 import { BooksContext } from "@/store/book-context"
 import { X } from "lucide-react"
 import { useContext, useState } from "react"

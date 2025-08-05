@@ -2,9 +2,9 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
-import { CellHandler } from "@/types/cell-handler"
-import { NewEditableCellProps } from "@/types/editable-cell-props"
-import { Mode } from "@/types/mode"
+import { CellHandler } from "@/types/CellHandler"
+import { NewEditableCellProps } from "@/types/EditableCellProps"
+import { Mode } from "@/types/Mode"
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 
 export default forwardRef<CellHandler, Omit<React.ComponentProps<"input">, "ref"> & NewEditableCellProps>(

@@ -4,9 +4,9 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { Command as CommandPrimitive } from "cmdk"
 import Combobox, { ComboboxItem } from "@/components/ui/combobox"
-import { Mode } from "@/types/mode"
-import { NewEditableCellProps } from "@/types/editable-cell-props"
-import { CellHandler } from "@/types/cell-handler"
+import { Mode } from "@/types/Mode"
+import { NewEditableCellProps } from "@/types/EditableCellProps"
+import { CellHandler } from "@/types/CellHandler"
 
 type EditableComboboxCellProps = NewEditableCellProps & {
     item?: ComboboxItem

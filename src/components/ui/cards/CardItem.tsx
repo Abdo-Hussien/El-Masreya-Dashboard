@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/Utils"
 
 const CardItem = ({ id, title, subtitle, className, children }:
     { id?: string, title: string, subtitle: any, className?: string, children?: React.ReactNode }) => {

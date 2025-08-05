@@ -1,11 +1,11 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/Utils"
 import { parseNumber, parsePrice } from "@/utils/value-formatter"
 import { ReactNode, useContext, useEffect, useState } from "react"
 import Divider from "../divider"
 import { InvoiceContext } from "@/store/invoice-context"
-import { Mode } from "@/types/mode"
+import { Mode } from "@/types/Mode"
 
 interface SummaryLineProps<T = number> {
     label: string

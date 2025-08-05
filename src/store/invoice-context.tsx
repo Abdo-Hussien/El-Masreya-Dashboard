@@ -1,7 +1,7 @@
 import { createContext, useMemo } from "react"
-import { InvoiceDetail } from "@/classes/invoice-detail"
-import { SummaryFields } from "@/types/summary-fields"
-import { SummaryAction } from "@/types/summary-action"
+import { InvoiceDetail } from "@/classes/InvoiceDetail"
+import { SummaryFields } from "@/types/SummaryFields"
+import { SummaryAction } from "@/types/SummaryAction"
 import { ColumnDef, Row } from "@tanstack/react-table"
 import { useInvoiceDetails } from "@/components/hooks/useInvoiceDetails"
 

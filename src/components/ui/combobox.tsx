@@ -4,12 +4,12 @@
 import { forwardRef, useEffect, useState } from "react"
 import { Command as CommandPrimitive } from "cmdk"
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/Utils'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger, } from '@/components/ui/popover'
 import Button from '@/components/ui/button'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { Mode } from "@/types/mode"
+import { Mode } from "@/types/Mode"
 
 export interface ComboboxItem<K = any> {
   label: string

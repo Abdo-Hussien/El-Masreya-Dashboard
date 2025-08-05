@@ -1,6 +1,6 @@
 // src/db/invoice-db.ts
 import Dexie, { Table } from "dexie"
-import { InvoiceDetail } from "@/classes/invoice-detail"
+import { InvoiceDetail } from "@/classes/InvoiceDetail"
 import 'dexie-observable'
 
 export class InvoiceDB extends Dexie {

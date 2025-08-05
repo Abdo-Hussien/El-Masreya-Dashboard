@@ -1,4 +1,4 @@
-import { Book } from "@/types/book"
+import { Book } from "@/types/Book"
 import { createContext, useState } from "react"
 
 

@@ -1,9 +1,9 @@
 import { useState, useReducer, useEffect, useCallback } from "react"
 import { Row, ColumnDef } from "@tanstack/react-table"
-import { InvoiceDetail } from "@/classes/invoice-detail"
-import { SummaryFields, SummaryFieldsBuilder } from "@/types/summary-fields"
-import { SummaryAction } from "@/types/summary-action"
-import { db } from "@/lib/indexed-db"
+import { InvoiceDetail } from "@/classes/InvoiceDetail"
+import { SummaryFields, SummaryFieldsBuilder } from "@/types/SummaryFields"
+import { SummaryAction } from "@/types/SummaryAction"
+import { db } from "@/lib/DexieDb"
 
 // Reducer for summary calculations
 function summaryReducer(state: SummaryFields, action: SummaryAction): SummaryFields {
