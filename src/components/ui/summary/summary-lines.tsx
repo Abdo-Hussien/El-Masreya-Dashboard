@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { useFormatter } from "@/utils/value-formatter"
+import { parseNumber, parsePrice } from "@/utils/value-formatter"
 import { ReactNode, useContext, useEffect, useState } from "react"
 import Divider from "../divider"
 import { InvoiceContext } from "@/store/invoice-context"
@@ -79,7 +79,6 @@ const EditableSummaryLine = ({ label, value, onChange, labelStyle, formatter, va
 
 const SaleSummaryLine = () => {
     const { summaryFields, execute } = useContext(InvoiceContext)
-    const { parsePrice, parseNumber } = useFormatter()
     const percentageValue = parseNumber(
         summaryFields.sale / summaryFields.subTotal,
         { style: "percent", minimumFractionDigits: 2 }
@@ -100,7 +99,6 @@ const SaleSummaryLine = () => {
 
 const AmountPaidSummaryLine = () => {
     const { summaryFields, execute } = useContext(InvoiceContext)
-    const { parsePrice } = useFormatter()
 
     return (
         <EditableSummaryLine

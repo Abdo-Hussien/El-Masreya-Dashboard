@@ -7,7 +7,7 @@ import Button from "../button"
 import EditableDataTable from "./variants/editable-data-table"
 import { InvoiceDetail } from "@/classes/invoice-detail"
 import { CheckboxBox } from "@/components/ui/checkbox-box"
-import { useFormatter } from "@/utils/value-formatter"
+import { parseNumber, parsePrice } from "@/utils/value-formatter"
 import EditableInputCell from "@/components/ui/cells/editable-input-cell"
 import { useContext, useRef } from "react"
 import EditableComboboxCell from "@/components/ui/cells/editable-combobox-cell"
@@ -16,6 +16,7 @@ import { CellHandler } from "@/types/cell-handler"
 import { InvoiceContext } from "@/store/invoice-context"
 import { BooksContext } from "@/store/book-context"
 import { Badge } from "../badge"
+import { DataTableSkeletonRow } from "../loaders/data-table-skeleton-row"
 
 type CellRendererProps = {
     row: Row<InvoiceDetail>,
@@ -36,13 +37,21 @@ type UpdateCallback<T> = (newValue: T) => void
 */
 type FormatterFunction = (value: number | string) => string
 
-
 export default function InvoiceDetailsDataTable() {
     const { books } = useContext(BooksContext)
-    const { invoiceDetails, addRow, updateRow, deleteRow, updateCell } = useContext(InvoiceContext)
-    const { parseNumber, parsePrice } = useFormatter()
+    const { invoiceDetails, addRow, updateRow, deleteRow, updateCell, isDexieLoading } = useContext(InvoiceContext)
     const cellRefs = useRef<Map<string, CellHandler>>(new Map())
 
+
+    if (isDexieLoading) {
+        return (
+            <div className="divide-y">
+                {Array.from({ length: 5 }).map((_, idx) => (
+                    <DataTableSkeletonRow key={idx} />
+                ))}
+            </div>
+        )
+    }
     const setCellRef = (id: string, node: CellHandler | null) => {
         if (node) {
             cellRefs.current.set(id, node)
@@ -58,18 +67,19 @@ export default function InvoiceDetailsDataTable() {
 
     // ---------- Input Cell Renderer ----------
 
-    function inputCellRenderer<T = number>(
+    function inputCellRenderer(
         { row, column, getValue, table }: CellRendererProps,
         cellToFocusOn: string,
         formatter: FormatterFunction,
         maxInputSize: number,
-        updateCallback?: UpdateCallback<T>
+        updateCallback?: UpdateCallback<number>
     ) {
         const id = `${column.id}-${row.id}`
-        const value = getValue()
+        const value = Number(getValue())
 
         // Accept new value: either via callback or default update
-        const onAccepted = (newValue: T) => {
+        const onAccepted = (newValue: number) => {
+            // console.log(id, typeof newValue)
             if (typeof updateCallback === "function") {
                 updateCallback(newValue)
             } else {
@@ -85,8 +95,8 @@ export default function InvoiceDetailsDataTable() {
             setTimeout(() => focusCell(cellToFocusOn), 100)
         }
 
-        const validate = (newValue: unknown): boolean => {
-            const asNumber = Number(newValue)
+        const validate = (newValue: number): boolean => {
+            const asNumber = newValue
             return Number.isFinite(asNumber) && asNumber >= 0 && asNumber <= maxInputSize
         }
 
@@ -110,7 +120,7 @@ export default function InvoiceDetailsDataTable() {
         cellToFocusOn: string
     ) {
         const id = `${column.id}-${row.id}`
-        const currentLabel = getValue()
+        const currentLabel = String(getValue())
         const selected = items.find((item) => item.label === currentLabel)
 
         const onAccepted = (newValue: ComboboxItem) => {

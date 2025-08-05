@@ -6,7 +6,7 @@ import { DataTable } from "../../data-table"
 import { useContext, useState } from "react"
 import Button from "../../button"
 import { Plus } from "lucide-react"
-import { useFormatter } from "@/utils/value-formatter"
+import { parseNumber } from "@/utils/value-formatter"
 import { InvoiceContext } from "@/store/invoice-context"
 
 
@@ -35,7 +35,6 @@ export default function EditableDataTable({ data, columns }: { data: any[], colu
         getFilteredRowModel: getFilteredRowModel(),
     })
 
-    const { parseNumber } = useFormatter()
     const rowsSelectedText = `تم تحديد ${parseNumber(table.getFilteredSelectedRowModel().rows.length)} من ${parseNumber(table.getFilteredRowModel().rows.length)} صفوف.`
 
     return (

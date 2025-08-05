@@ -3,7 +3,7 @@ import { X } from "lucide-react"
 import Button from "../button"
 import CardItem from "../cards/card-item"
 import { useContext, useEffect, useState } from "react"
-import { useFormatter } from "@/utils/value-formatter"
+import { parsePrice } from "@/utils/value-formatter"
 import { SummaryLine, SaleSummaryLine, AmountPaidSummaryLine } from "../summary/summary-lines"
 import { InvoiceContext } from "@/store/invoice-context"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -14,7 +14,6 @@ export default function SummaryDialog({ isOpen, onClose }: {
     onClose: () => void
 }) {
     const { summaryFields, execute } = useContext(InvoiceContext)
-    const { parsePrice } = useFormatter()
     const [isPaid, setIsPaid] = useState(false)
 
     const handleIsPaidChange = (value: boolean) => {

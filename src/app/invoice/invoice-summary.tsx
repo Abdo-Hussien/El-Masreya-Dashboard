@@ -3,14 +3,13 @@ import CardItem from "@/components/ui/cards/card-item"
 import Divider from "@/components/ui/divider"
 import { SummaryLine, SaleSummaryLine, AmountPaidSummaryLine } from "@/components/ui/summary/summary-lines"
 import { InvoiceContext } from "@/store/invoice-context"
-import { useFormatter } from "@/utils/value-formatter"
+import { parsePrice } from "@/utils/value-formatter"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useContext, useState, useEffect } from "react"
 
 export default function InvoiceSummary() {
 
     const { summaryFields, execute } = useContext(InvoiceContext)
-    const { parsePrice } = useFormatter()
 
     const [isPaid, setIsPaid] = useState(false)
 
