@@ -6,7 +6,8 @@ import { ColumnDef, Row } from "@tanstack/react-table"
 import { useInvoiceDetails } from "@/components/hooks/useInvoiceDetails"
 
 type InvoiceContextType = {
-    invoiceDetails: InvoiceDetail[]
+    invoiceDetails: InvoiceDetail[],
+    isDexieLoading: boolean
     updateCell: (newValue: any, row: Row<InvoiceDetail>, column: ColumnDef<InvoiceDetail>) => void
     addRow: () => void
     updateRow: (rowId: number, updatedRow: InvoiceDetail) => void
@@ -20,10 +21,11 @@ type InvoiceContextType = {
 const InvoiceContext = createContext<InvoiceContextType>({} as InvoiceContextType)
 
 export default function InvoiceContextProvider({ children }: { children: React.ReactNode }) {
-    const { invoiceDetails, addRow, updateRow, deleteRow, resetForm, updateCell, getNumOfBooks, summaryFields, execute } = useInvoiceDetails()
+    const { invoiceDetails, isDexieLoading, addRow, updateRow, deleteRow, resetForm, updateCell, getNumOfBooks, summaryFields, execute } = useInvoiceDetails()
 
     const contextValue = useMemo(() => ({
         invoiceDetails,
+        isDexieLoading,
         addRow,
         updateRow,
         deleteRow,
@@ -33,7 +35,7 @@ export default function InvoiceContextProvider({ children }: { children: React.R
         summaryFields,
         execute,
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [invoiceDetails, summaryFields, addRow, updateRow, deleteRow, updateCell, resetForm, getNumOfBooks])
+    }), [invoiceDetails, isDexieLoading, summaryFields, addRow, updateRow, deleteRow, updateCell, resetForm, getNumOfBooks])
 
     return (
         <InvoiceContext.Provider value={contextValue}>

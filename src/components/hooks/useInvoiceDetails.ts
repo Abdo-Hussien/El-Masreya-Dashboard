@@ -1,4 +1,3 @@
-// src/hooks/useInvoiceDetails.ts
 import { useState, useReducer, useEffect, useCallback } from "react"
 import { Row, ColumnDef } from "@tanstack/react-table"
 import { InvoiceDetail } from "@/classes/invoice-detail"
@@ -43,6 +42,8 @@ function summaryReducer(state: SummaryFields, action: SummaryAction): SummaryFie
 
 export function useInvoiceDetails() {
     const [invoiceDetails, setInvoiceDetails] = useState<InvoiceDetail[]>([])
+    const [isDexieLoading, setIsDexieLoading] = useState(true)
+
     const initialSummaryFields = new SummaryFieldsBuilder()
         .setSubTotal(0)
         .setSale(0)
@@ -53,7 +54,8 @@ export function useInvoiceDetails() {
 
     // Load invoices from IndexedDB when mounted
     useEffect(() => {
-        const loadFromDb = async () => {
+        const loadFromDexie = async () => {
+            setIsDexieLoading(true)
             const all = await db.invoiceDetails.toArray();
             if (all.length > 0) {
                 setInvoiceDetails(all);
@@ -62,8 +64,9 @@ export function useInvoiceDetails() {
                 const row = await db.invoiceDetails.get(id);
                 setInvoiceDetails(row ? [row] : []);
             }
+            setIsDexieLoading(false)
         };
-        loadFromDb()
+        loadFromDexie()
     }, [])
 
     // Update totals when invoiceDetails change
@@ -74,7 +77,6 @@ export function useInvoiceDetails() {
     const addRow = useCallback(async () => {
         const newRow = new InvoiceDetail()
         const id = await db.invoiceDetails.add(newRow)
-        console.log(id)
         setInvoiceDetails((prev) => [...prev, { ...newRow, id }])
     }, [])
 
@@ -132,5 +134,6 @@ export function useInvoiceDetails() {
         getNumOfBooks,
         summaryFields,
         execute,
+        isDexieLoading,
     }
 }

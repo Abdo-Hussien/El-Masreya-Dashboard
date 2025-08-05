@@ -9,10 +9,6 @@ import BooksContextProvider from "@/store/book-context";
 import InvoiceSummary from "./invoice-summary";
 
 export default function InvoicePage() {
-    // const { createInvoice, gridError, handleStateChange, tableState } = useGrid()
-
-    // Create custom hook to calculate sub total of all items
-
     return (
         <BooksContextProvider>
             <InvoiceContextProvider>
