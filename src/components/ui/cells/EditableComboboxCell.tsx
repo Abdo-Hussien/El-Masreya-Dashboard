@@ -59,7 +59,7 @@ export default forwardRef<CellHandler, Omit<React.ComponentProps<typeof CommandP
         return mode == "write" ? (
             <div className="flex justify-start">
                 <Combobox id={id} ref={buttonRef} item={selectedItem} items={items} variant="ghost" placeholder="اختر منتج"
-                    mode={mode} onSelect={handleOnSelect} handleOnBlur={handleOnBlur}
+                    mode={mode} onSelect={handleOnSelect} handleOnBlur={handleOnBlur} className="w-full"
                     {...props}
                 />
             </div>

@@ -5,7 +5,7 @@ export async function GET() {
     try {
         const { getODBC } = await import('@/lib/OdbcDb');
         const conn = await getODBC();
-        const data = await conn.query('SELECT * FROM Customers');
+        const data = await conn.query('SELECT CustomerID, CustomerName, Supplyer FROM Customers');
         await conn.close();
 
         return NextResponse.json({ success: true, data });

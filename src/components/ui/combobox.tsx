@@ -93,11 +93,11 @@ export default forwardRef<HTMLButtonElement, Omit<React.ComponentProps<typeof Co
             <ChevronsUpDown className="h-2 w-2 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0">
+        <PopoverContent className="w-full lg:w-[var(--radix-popover-trigger-width)] p-0">
           <Command>
             <CommandInput placeholder={placeholder} />
             <CommandEmpty>No result found.</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup className="overflow-y-auto max-h-52">
               {items.map((v) => (
                 <CommandItem key={String(v.value)} value={`${v.value}`} onSelect={handleOnSelect} {...props}>
                   <Check className={cn('mr-2 h-4 w-4', item?.value === v.value ? 'opacity-100' : 'opacity-0')} />

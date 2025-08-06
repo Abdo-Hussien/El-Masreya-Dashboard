@@ -8,37 +8,33 @@ import InvoiceFields from "./InvoiceFields"
 import InvoiceDetailsDataTable from "@/components/ui/data-table/InvoiceDetailsDataTable"
 import { useContext, useEffect, useState } from "react"
 import { InvoiceContext } from "@/store/invoice-context"
-import { db } from "@/lib/DexieDb"
+import { getDb } from "@/lib/DexieDb"
+import axios from "axios"
+import { ComboboxItem } from "@/components/ui/combobox"
 
 const IndexedDBSync = ({ isSynced, setIsSynced }: { isSynced: boolean, setIsSynced: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     useEffect(() => {
+        if (typeof window === "undefined") return
+
         let unsub: any
 
-        (async () => {
-            if (typeof window === "undefined") {
-                return
+        getDb().then((db) => {
+            unsub = (_changes: any) => {
+                setIsSynced(false)
+                setTimeout(() => setIsSynced(true), 50)
             }
+            db?.on("changes", unsub)
+        })
 
-            try {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                unsub = (_changes: any) => {
-                    setIsSynced(false)
-                    setTimeout(() => setIsSynced(true), 50)
-                }
-
-                db.on("changes", unsub)
-            } catch (err) {
-                console.error("[IndexedDBSync] Failed to load dexie-observable:", err)
-            }
-        })()
         return () => {
             if (unsub) {
-                db.on("changes").unsubscribe(unsub)
+                getDb().then((db) => db?.on("changes").unsubscribe(unsub))
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+
 
     return (
         <div className="flex items-center gap-2">
@@ -51,6 +47,23 @@ const IndexedDBSync = ({ isSynced, setIsSynced }: { isSynced: boolean, setIsSync
 export default function InvoiceForm() {
     const [isSynced, setIsSynced] = useState(true)
     const { getNumOfBooks } = useContext(InvoiceContext)
+    const [customers, setCustomers] = useState<ComboboxItem[]>([])
+
+    useEffect(() => {
+        const fetchCustomers = async () => {
+            try {
+                const response = await axios.get("/api/customer")
+                console.log(response.data)
+
+                const mappedCustomers = (response.data.data as any[]).map((customer: any) => ({ label: customer.CustomerName, value: customer.CustomerID }))
+                setCustomers(mappedCustomers || [])
+            } catch (err) {
+                console.error("Failed to fetch customers:", err)
+            }
+        }
+
+        fetchCustomers()
+    }, [])
 
 
     return (
@@ -64,7 +77,7 @@ export default function InvoiceForm() {
                     <InvoiceActions />
                 </div>
                 <div id="inv_info" className="flex flex-col justify-end gap-4">
-                    <InvoiceFields customers={[]} invoiceStatuses={[]} />
+                    <InvoiceFields customers={customers} invoiceStatuses={[]} />
                 </div>
             </div>
 
