@@ -8,37 +8,29 @@ import InvoiceFields from "./InvoiceFields"
 import InvoiceDetailsDataTable from "@/components/ui/data-table/InvoiceDetailsDataTable"
 import { useContext, useEffect, useState } from "react"
 import { InvoiceContext } from "@/store/invoice-context"
-import { getDb } from "@/lib/DexieDb"
 import axios from "axios"
 import { ComboboxItem } from "@/components/ui/combobox"
 
 const IndexedDBSync = ({ isSynced, setIsSynced }: { isSynced: boolean, setIsSynced: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
-    useEffect(() => {
-        if (typeof window === "undefined") return
+    // useEffect(() => {
 
-        let unsub: any
+    //     const unsub = () => {
+    //         setIsSynced(false)
+    //         setTimeout(() => setIsSynced(true), 50)
+    //     };
 
-        getDb().then((db) => {
-            unsub = (_changes: any) => {
-                setIsSynced(false)
-                setTimeout(() => setIsSynced(true), 50)
-            }
-            db?.on("changes", unsub)
-        })
+    //     db?.on("changes", unsub)
 
-        return () => {
-            if (unsub) {
-                getDb().then((db) => db?.on("changes").unsubscribe(unsub))
-            }
-        }
-    }, [])
-
-
+    //     return () => {
+    //         db?.on("changes").unsubscribe?.(unsub)
+    //     };
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [])
 
     return (
         <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${isSynced ? "bg-green-500" : "bg-gray-500"}`} />
+            <div className={`w-2 h-2 rounded-full ${isSynced ? "bg-green-500 shadow-[inset_0_-4px_4px_0_theme(colors.green.300),0_1px_2px_0_rgba(0,0,0,0.05)]" : "bg-gray-500 shadow-[inset_0_-4px_4px_0_theme(colors.gray.300),0_1px_2px_0_rgba(0,0,0,0.05)]"}`} />
             <span className="text-sm"> {isSynced ? "المعلومات محفوظة" : "جاري الحفظ..."} </span>
         </div>
     )
