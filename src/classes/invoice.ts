@@ -1,5 +1,5 @@
 
-import { InvoiceDetail } from "@/classes/invoice-detail";
+import { InvoiceDetail } from "@/classes/InvoiceDetail";
 
 type statusType = "paid" | "unpaid" | "overdue"
 

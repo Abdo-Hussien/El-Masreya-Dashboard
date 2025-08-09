@@ -18,6 +18,7 @@ export default function ODBC() {
   const [logs, setLogs] = useState<string[]>([])
 
   const log = (msg: string) => setLogs((prev) => [...prev, msg])
+
   const testAll = async () => {
     try {
       log('🔌 Testing connection...')
@@ -32,7 +33,8 @@ export default function ODBC() {
 
       setStep('create-customer')
       log('📤 Creating test customer...')
-      const createRes = await axios.post('/api/customer', { DisplayName: 'mohamedhussien._', CustomerName: 'Mohamed Hussien', Area: 'Heliopolis', City: 'Cairo' })
+      // DisplayName has a unique constraint
+      const createRes = await axios.post('/api/customer', { DisplayName: 'mohamedhussien_', CustomerName: 'MohamedHuss', Area: 'Heliopolis', City: 'Cairo' })
       const customerId = createRes.data.id
       log('Customer created.')
 
