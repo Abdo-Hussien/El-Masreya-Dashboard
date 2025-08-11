@@ -42,7 +42,6 @@ export default function InvoiceDetailsDataTable() {
     const { invoiceDetails, addRow, updateRow, deleteRow, updateCell, isDexieLoading } = useContext(InvoiceContext)
     const cellRefs = useRef<Map<string, CellHandler>>(new Map())
 
-
     if (isDexieLoading) {
         return (
             <div className="divide-y">
@@ -125,12 +124,12 @@ export default function InvoiceDetailsDataTable() {
 
         const onAccepted = (newValue: ComboboxItem) => {
             const selectedBook = books.find(
-                (b) => String(b.id) === String(newValue.value)
+                (b) => String(b.barcode) === String(newValue.value)
             )
 
             if (!selectedBook) return
 
-            const { id: barcode, bookTitle, price } = selectedBook
+            const { barcode: barcode, bookTitle, price } = selectedBook
             const invoiceDetail = new InvoiceDetail(barcode, bookTitle, price)
 
             updateRow(row.original.id!, invoiceDetail)
@@ -210,8 +209,8 @@ export default function InvoiceDetailsDataTable() {
             header: "الباركود",
             cell: (props) => {
                 const items: ComboboxItem[] = books.map((b) => ({
-                    label: b.id,
-                    value: b.id,
+                    label: b.barcode,
+                    value: b.barcode,
                 }))
                 return comboboxCellRenderer(props, items, `barcode-${Number(props.row.id) + 1}`)
             },
@@ -224,7 +223,7 @@ export default function InvoiceDetailsDataTable() {
             cell: (props) => {
                 const items: ComboboxItem[] = books.map((b) => ({
                     label: b.bookTitle,
-                    value: b.id,
+                    value: b.barcode,
                 }))
                 return comboboxCellRenderer(props, items, `quantity-${props.row.id}`)
             },

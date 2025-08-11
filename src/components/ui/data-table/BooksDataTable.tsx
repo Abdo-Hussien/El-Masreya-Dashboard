@@ -52,19 +52,19 @@ export default function BooksDataTable() {
             },
         },
         {
-            accessorKey: "quantityInStock",
+            accessorKey: "unitsAvailable",
             header: () => "العدد في المخزن",
             cell: ({ row }) => {
-                const quantityInStock = Number(row.getValue("quantityInStock"))
+                const quantityInStock = Number(row.getValue("unitsAvailable"))
 
                 return <div className="text-right">{quantityInStock}</div>
             },
         },
         {
-            accessorKey: "quantityPerPack",
+            accessorKey: "packSize",
             header: () => "القطع",
             cell: ({ row }) => {
-                const quantityPerPack = Number(row.getValue("quantityPerPack"))
+                const quantityPerPack = Number(row.getValue("packSize"))
                 return <div className="text-right">{quantityPerPack}</div>
             },
         }

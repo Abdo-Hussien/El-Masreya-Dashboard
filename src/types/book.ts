@@ -1,8 +1,9 @@
 export type Book = {
-    id: string
+    barcode: string
     bookTitle: string
-    quantityInStock: number
+    unitsAvailable: number
     wholesalePrice: number // الفئة
     price: number // السعر
-    quantityPerPack: number // القطع
+    packSize: number // القطع
+    [key: string]: any
 }
