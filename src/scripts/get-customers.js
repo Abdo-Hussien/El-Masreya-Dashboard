@@ -1,0 +1,1 @@
+export const query = 'SELECT CustomerID, CustomerName, Supplyer FROM Customers'

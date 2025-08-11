@@ -33,7 +33,10 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/store/invoice-context.tsx"
+    "src/store/invoice-context.tsx",
+    "src/scripts/get-statuses.js",
+    "src/scripts/get-customers.js",
+    "src/scripts/get-books.js"
   ],
   "exclude": [
     "node_modules"
