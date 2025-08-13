@@ -10,7 +10,7 @@ const InvoiceActions = () => {
         <div id="inv-main-actions">
             <div data-component="button-group" className="flex flex-wrap-reverse gap-4 align-top justify-end">
                 <Button onClick={resetForm} variant="outline">ابدأ من جديد</Button>
-                <Button>إنشاء فاتورة</Button>
+                <Button onClick={() => { }}>إنشاء فاتورة</Button>
             </div>
         </div>
     )

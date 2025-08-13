@@ -6,10 +6,8 @@ import CardItem from "@/components/ui/cards/CardItem"
 import InvoiceActions from "./InvoiceActions"
 import InvoiceFields from "./InvoiceFields"
 import InvoiceDetailsDataTable from "@/components/ui/data-table/InvoiceDetailsDataTable"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { InvoiceContext } from "@/store/invoice-context"
-import axios from "axios"
-import { ComboboxItem } from "@/components/ui/combobox"
 
 const IndexedDBSync = ({ isSynced, setIsSynced }: { isSynced: boolean, setIsSynced: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
@@ -39,24 +37,6 @@ const IndexedDBSync = ({ isSynced, setIsSynced }: { isSynced: boolean, setIsSync
 export default function InvoiceForm() {
     const [isSynced, setIsSynced] = useState(true)
     const { getNumOfBooks } = useContext(InvoiceContext)
-    const [customers, setCustomers] = useState<ComboboxItem[]>([])
-
-    useEffect(() => {
-        const fetchCustomers = async () => {
-            try {
-                const response = await axios.get("/api/customer")
-                console.log(response.data)
-
-                const mappedCustomers = (response.data.data as any[]).map((customer: any) => ({ label: customer.CustomerName, value: customer.CustomerID }))
-                setCustomers(mappedCustomers || [])
-            } catch (err) {
-                console.error("Failed to fetch customers:", err)
-            }
-        }
-
-        fetchCustomers()
-    }, [])
-
 
     return (
         <div id="inv_form" className="flex flex-col grow bg-white rounded-xl border">
@@ -69,7 +49,7 @@ export default function InvoiceForm() {
                     <InvoiceActions />
                 </div>
                 <div id="inv_info" className="flex flex-col justify-end gap-4">
-                    <InvoiceFields customers={customers} invoiceStatuses={[]} />
+                    <InvoiceFields />
                 </div>
             </div>
 
