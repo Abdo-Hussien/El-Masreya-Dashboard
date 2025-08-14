@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 
-async function getODBC() {
+async function getConnection() {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const odbc: typeof ODBC = require('odbc')
   return await odbc.connect('DSN=Masria_V26')
@@ -14,5 +14,5 @@ async function getODBC() {
 
 
 export {
-  getODBC
+  getConnection,
 }

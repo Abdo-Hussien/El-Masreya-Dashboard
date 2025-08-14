@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo, useCallback } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import Combobox, { ComboboxItem } from "@/components/ui/combobox"
 import axios, { AxiosError } from "axios"
@@ -50,6 +50,8 @@ function useFetchComboboxItems<T>(url: string, mapper: ComboboxItemMapper<T>) {
 
 export default function InvoiceFields() {
     const comboWidth = "w-[calc(50%-0.5rem)] lg:w-[calc(33%-0.75rem)]"
+    const [selectedCustomer, setSelectedCustomer] = useState<ComboboxItem<number>>()
+    const [selectedStatus, setSelectedStatus] = useState<ComboboxItem<number>>()
 
     const mapCustomers = useCallback(
         (res: { data: Customer[] }) =>
@@ -88,6 +90,11 @@ export default function InvoiceFields() {
                 <Combobox
                     className={comboWidth}
                     placeholder={loadingCustomers ? "جارٍ التحميل..." : "اختر العميل..."}
+                    item={selectedCustomer}
+                    onSelect={(value: string) => {
+                        const selected = customers.find((v) => v.value == Number(value))
+                        setSelectedCustomer(selected)
+                    }}
                     items={customers}
                     disabled={loadingCustomers || !!errorCustomers}
                 />
@@ -95,6 +102,11 @@ export default function InvoiceFields() {
                     className={comboWidth}
                     placeholder={loadingStatuses ? "جارٍ التحميل..." : "اختر حالة الفاتورة..."}
                     items={statuses}
+                    item={selectedStatus}
+                    onSelect={(value: string) => {
+                        const selected = statuses.find((v) => v.value == Number(value))
+                        setSelectedStatus(selected)
+                    }}
                     disabled={loadingStatuses || !!errorStatuses}
                 />
             </div>

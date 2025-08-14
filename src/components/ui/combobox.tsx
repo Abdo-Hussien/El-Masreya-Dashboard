@@ -60,16 +60,11 @@ export default forwardRef<HTMLButtonElement, Omit<React.ComponentProps<typeof Co
   },
     ref) {
 
-
     const [open, setOpen] = useState<boolean>(false)
 
-
     function handleOnSelect<T = string>(value: T) {
-
       setOpen(false)
-
-      if (typeof value == "string")
-        onSelect?.(value)
+      if (typeof value == "string") onSelect?.(value)
     }
 
     const onOpenChange = (open: boolean) => {
@@ -78,7 +73,6 @@ export default forwardRef<HTMLButtonElement, Omit<React.ComponentProps<typeof Co
     }
 
 
-    // Why does it render many times?
     useEffect(() => {
       if (mode == "read") setOpen(false)
       else if (mode == "write") setOpen(true)
