@@ -2,13 +2,13 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/scripts/get-customers'
 import { Customer } from '@/interfaces/Customer'
+import { getConnection } from '@/lib/OdbcDb'
 
 export async function GET() {
     try {
-        const { getODBC } = await import('@/lib/OdbcDb')
-        const conn = await getODBC()
-        const data = await conn.query<Customer[]>(query)
-        await conn.close()
+        const context = await getConnection()
+        const data = await context.query<Customer[]>(query)
+        await context.close()
 
         return NextResponse.json({ success: true, data })
     } catch (error: any) {
@@ -24,15 +24,14 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { DisplayName, CustomerName, Area, City } = body;
 
-        const { getODBC } = await import('@/lib/OdbcDb');
-        const conn = await getODBC();
+        const context = await getConnection();
 
         const insertSql = `INSERT INTO Customers (DisplayName, CustomerName, Area, City) VALUES ('${DisplayName}', '${CustomerName}', '${Area}', '${City}')`
-        await conn.query(insertSql)
+        await context.query(insertSql)
 
-        const result = await conn.query<{ LastID: number }>('SELECT MAX(CustomerID) AS LastID FROM Customers');
+        const result = await context.query<{ LastID: number }>('SELECT MAX(CustomerID) AS LastID FROM Customers');
 
-        await conn.close();
+        await context.close();
 
         return NextResponse.json({
             success: true,

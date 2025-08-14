@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/scripts/get-books';
+import { getConnection } from '@/lib/OdbcDb';
 
 export async function GET() {
     try {
-        const { getODBC } = await import('@/lib/OdbcDb');
-        const conn = await getODBC();
-        const data = await conn.query(query);
-        await conn.close();
+        const context = await getConnection();
+        const data = await context.query(query);
+        await context.close();
 
         return NextResponse.json({ success: true, data });
     } catch (error: any) {
