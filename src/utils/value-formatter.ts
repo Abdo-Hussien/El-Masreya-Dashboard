@@ -6,10 +6,20 @@ interface DateFormat {
   LONGER: Intl.DateTimeFormatOptions
 }
 
-const dateOptions: DateFormat = {
+export const dateOptions: DateFormat = {
   SHORT: { month: "short", year: "numeric" },
   LONG: { weekday: "short", year: "numeric", month: "short", day: "2-digit" },
   LONGER: { weekday: "long", year: "numeric", month: "long", day: "2-digit", hour: "2-digit" }
+}
+
+export const formatAccessDate = (date: Date): string => {
+  const mm = String(date.getMonth() + 1).padStart(2, '0')
+  const dd = String(date.getDate()).padStart(2, '0')
+  const yyyy = date.getFullYear()
+  const hh = String(date.getHours()).padStart(2, '0')
+  const mi = String(date.getMinutes()).padStart(2, '0')
+  const ss = String(date.getSeconds()).padStart(2, '0')
+  return `#${mm}/${dd}/${yyyy} ${hh}:${mi}:${ss}#`
 }
 
 export const parseNumber = (number: string | number = 0.0, options: Intl.NumberFormatOptions = {}) => {
@@ -107,5 +117,3 @@ export const parsePrice = (price: string | number = 0.0) => {
     return "غير معروف"
   }
 }
-
-export { dateOptions }
