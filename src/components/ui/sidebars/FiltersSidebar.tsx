@@ -31,23 +31,23 @@ export default function FiltersSidebar({ open, onClose }: FilterSidebarProps) {
     if (!show) return null
 
     const products: ComboboxItem[] = [
-        { label: "المنتج 1", value: "product1" },
-        { label: "المنتج 2", value: "product2" },
+        { label: "المنتج 1", value: 0 },
+        { label: "المنتج 2", value: 1 },
     ]
 
     const categories: ComboboxItem[] = [
-        { label: "تصنيف 1", value: "cat1" },
-        { label: "تصنيف 2", value: "cat2" },
+        { label: "تصنيف 1", value: 0 },
+        { label: "تصنيف 2", value: 1 },
     ]
 
     const barcodes: ComboboxItem[] = [
-        { label: "12345", value: "12345" },
-        { label: "67890", value: "67890" },
+        { label: "12345", value: 0 },
+        { label: "67890", value: 1 },
     ]
 
     const statuses: ComboboxItem[] = [
-        { label: "متوفر", value: "available" },
-        { label: "غير متوفر", value: "unavailable" },
+        { label: "متوفر", value: 0 },
+        { label: "غير متوفر", value: 1 },
     ]
 
     return (
@@ -69,19 +69,27 @@ export default function FiltersSidebar({ open, onClose }: FilterSidebarProps) {
                 <main className="flex-1 overflow-y-auto p-4 space-y-6">
                     <section>
                         <Label className="mb-3 block">اسم المنتج</Label>
-                        <Combobox className="w-full" items={products} placeholder="اختر اسم المنتج" />
+                        <Combobox className="w-full" items={products} placeholder="اختر اسم المنتج" item={undefined} onSelect={function (value: React.SetStateAction<ComboboxItem | undefined>): void {
+                            throw new Error("Function not implemented.")
+                        }} />
                     </section>
                     <section>
                         <Label className="mb-3 block">التصنيف</Label>
-                        <Combobox className="w-full" items={categories} placeholder="حدد التصنيف" />
+                        <Combobox className="w-full" items={categories} placeholder="حدد التصنيف" item={undefined} onSelect={function (value: React.SetStateAction<ComboboxItem | undefined>): void {
+                            throw new Error("Function not implemented.")
+                        }} />
                     </section>
                     <section>
                         <Label className="mb-3 block">الباركود</Label>
-                        <Combobox className="w-full" items={barcodes} placeholder="ادخل الباركود" />
+                        <Combobox className="w-full" items={barcodes} placeholder="ادخل الباركود" item={undefined} onSelect={function (value: React.SetStateAction<ComboboxItem | undefined>): void {
+                            throw new Error("Function not implemented.")
+                        }} />
                     </section>
                     <section>
                         <Label className="mb-3 block">الحالة</Label>
-                        <Combobox className="w-full" items={statuses} placeholder="حالة المنتج" />
+                        <Combobox className="w-full" items={statuses} placeholder="حالة المنتج" item={undefined} onSelect={function (value: React.SetStateAction<ComboboxItem | undefined>): void {
+                            throw new Error("Function not implemented.")
+                        }} />
                     </section>
                 </main>
 

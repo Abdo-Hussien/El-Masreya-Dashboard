@@ -4,6 +4,8 @@ import { SummaryFields } from "@/types/SummaryFields"
 import { SummaryAction } from "@/types/SummaryAction"
 import { ColumnDef, Row } from "@tanstack/react-table"
 import { useInvoiceDetails } from "@/components/hooks/useInvoiceDetails"
+import { useInvoiceFields } from "@/components/hooks/useInvoiceFields"
+import { ComboboxItem } from "@/components/ui/combobox"
 
 type InvoiceContextType = {
     invoiceDetails: InvoiceDetail[],
@@ -16,13 +18,19 @@ type InvoiceContextType = {
     getNumOfBooks: () => number
     summaryFields: SummaryFields
     execute: React.Dispatch<SummaryAction>
+
+    // Fields for the invoice form
+    selectedCustomer: ComboboxItem | undefined
+    selectedStatus: ComboboxItem | undefined
+    setSelectedCustomer: React.Dispatch<React.SetStateAction<ComboboxItem | undefined>>
+    setSelectedStatus: React.Dispatch<React.SetStateAction<ComboboxItem | undefined>>
 }
 
 const InvoiceContext = createContext<InvoiceContextType>({} as InvoiceContextType)
 
 export default function InvoiceContextProvider({ children }: { children: React.ReactNode }) {
     const { invoiceDetails, isDexieLoading, addRow, updateRow, deleteRow, resetForm, updateCell, getNumOfBooks, summaryFields, execute } = useInvoiceDetails()
-
+    const { selectedCustomer, selectedStatus, setSelectedCustomer, setSelectedStatus } = useInvoiceFields()
     const contextValue = useMemo(() => ({
         invoiceDetails,
         isDexieLoading,
@@ -34,8 +42,14 @@ export default function InvoiceContextProvider({ children }: { children: React.R
         getNumOfBooks,
         summaryFields,
         execute,
+
+        // Fields for the invoice form
+        selectedCustomer,
+        selectedStatus,
+        setSelectedCustomer,
+        setSelectedStatus
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [invoiceDetails, isDexieLoading, summaryFields, addRow, updateRow, deleteRow, updateCell, resetForm, getNumOfBooks])
+    }), [invoiceDetails, isDexieLoading, summaryFields, addRow, updateRow, deleteRow, updateCell, resetForm, getNumOfBooks, selectedCustomer, selectedStatus, setSelectedCustomer, setSelectedStatus])
 
     return (
         <InvoiceContext.Provider value={contextValue}>

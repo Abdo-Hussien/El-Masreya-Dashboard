@@ -1,113 +1,65 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useCallback, useContext } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import Combobox, { ComboboxItem } from "@/components/ui/combobox"
-import axios, { AxiosError } from "axios"
 import { InvoiceStatus } from "@/interfaces/InvoiceStatus"
 import { Customer } from "@/interfaces/Customer"
+import { useFetch } from "@/components/hooks/useFetch"
+import { InvoiceContext } from "@/store/invoice-context"
 
-async function fetchData<T>(url: string, cancelToken: AbortSignal): Promise<T> {
-    const response = await axios.get<T>(url, { signal: cancelToken })
-    return response.data
-}
-
-// ----------------------
-// Types
-// ----------------------
 type ComboboxItemMapper<T> = (data: T) => ComboboxItem<number>[]
 
 function useFetchComboboxItems<T>(url: string, mapper: ComboboxItemMapper<T>) {
-    const [items, setItems] = useState<ComboboxItem<number>[]>([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
-
-    useEffect(() => {
-        const controller = new AbortController();
-
-        (async () => {
-            try {
-                setLoading(true)
-                setError(null)
-                const rawData = await fetchData<T>(url, controller.signal)
-                setItems(mapper(rawData))
-            } catch (err) {
-                if (!(err instanceof DOMException && err.name === "AbortError")) {
-                    const message = err instanceof AxiosError ? err.message : "Unknown error"
-                    setError(message)
-                    console.error(`Failed to fetch from ${url}:`, err)
-                }
-            } finally {
-                setLoading(false)
-            }
-        })()
-
-        return () => controller.abort()
-    }, [mapper, url])
-
+    const { data, loading, error } = useFetch<T>(url)
+    const items = data ? mapper(data) : []
     return { items, loading, error }
 }
 
+
 export default function InvoiceFields() {
     const comboWidth = "w-[calc(50%-0.5rem)] lg:w-[calc(33%-0.75rem)]"
-    const [selectedCustomer, setSelectedCustomer] = useState<ComboboxItem<number>>()
-    const [selectedStatus, setSelectedStatus] = useState<ComboboxItem<number>>()
-
+    const { selectedCustomer, selectedStatus, setSelectedCustomer, setSelectedStatus } = useContext(InvoiceContext)
     const mapCustomers = useCallback(
-        (res: { data: Customer[] }) =>
-            res.data.map((c) => ({
-                label: c.name,
-                value: c.id,
-            })),
-        []
+        (res: { data: Customer[] }) => {
+            return res.data.map((c) => ({ label: c.name, value: c.id, }))
+        }, []
     )
 
     const mapStatuses = useCallback(
-        (res: { data: InvoiceStatus[] }) =>
-            res.data.map((c) => ({
-                label: c.alias,
-                value: c.id,
-            })),
-        []
+        (res: { data: InvoiceStatus[] }) => {
+            return res.data.map((c) => ({ label: c.alias, value: Number(c.id), }))
+        }, []
     )
 
     const {
         items: customers,
         loading: loadingCustomers,
         error: errorCustomers,
-    } = useFetchComboboxItems("/api/customer", mapCustomers)
+    } = useFetchComboboxItems<{ data: Customer[] }>("/api/customer", mapCustomers)
 
     const {
         items: statuses,
         loading: loadingStatuses,
         error: errorStatuses,
-    } = useFetchComboboxItems("/api/statuses", mapStatuses)
-
+    } = useFetchComboboxItems<{ data: InvoiceStatus[] }>("/api/statuses", mapStatuses)
     return (
         <>
             <Checkbox label="سعر جملة" />
             <div className="flex flex-wrap gap-4">
                 <Combobox
+                    item={selectedCustomer}
+                    items={customers}
+                    onSelect={setSelectedCustomer}
                     className={comboWidth}
                     placeholder={loadingCustomers ? "جارٍ التحميل..." : "اختر العميل..."}
-                    item={selectedCustomer}
-                    onSelect={(value: string) => {
-                        const selected = customers.find((v) => v.value == Number(value))
-                        setSelectedCustomer(selected)
-                    }}
-                    items={customers}
-                    disabled={loadingCustomers || !!errorCustomers}
                 />
                 <Combobox
+                    item={selectedStatus}
+                    items={statuses}
+                    onSelect={setSelectedStatus}
                     className={comboWidth}
                     placeholder={loadingStatuses ? "جارٍ التحميل..." : "اختر حالة الفاتورة..."}
-                    items={statuses}
-                    item={selectedStatus}
-                    onSelect={(value: string) => {
-                        const selected = statuses.find((v) => v.value == Number(value))
-                        setSelectedStatus(selected)
-                    }}
-                    disabled={loadingStatuses || !!errorStatuses}
                 />
             </div>
 

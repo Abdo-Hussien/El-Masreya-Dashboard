@@ -18,38 +18,11 @@ export default function BooksContextProvider({ children }: { children: React.Rea
     useEffect(() => {
         const getBooks = async () => {
             const response = await axios.get('/api/books')
-            console.log(response.data.data)
             setBooks(response.data.data)
         }
         getBooks()
     }, [])
-    // const books: Book[] = [
-    //     {
-    //         bookTitle: "Book1",
-    //         id: "224253579345",
-    //         price: 400,
-    //         quantityInStock: 43,
-    //         quantityPerPack: 67,
-    //         wholesalePrice: 345
-    //     },
-    //     {
-    //         bookTitle: "Book2",
-    //         id: "953579657",
-    //         price: 500,
-    //         quantityInStock: 43,
-    //         quantityPerPack: 67,
-    //         wholesalePrice: 345
-    //     },
-    //     {
-    //         bookTitle: "Book3",
-    //         id: "3524253572342",
-    //         price: 237,
-    //         quantityInStock: 43,
-    //         quantityPerPack: 67,
-    //         wholesalePrice: 345
-    //     }
 
-    // ]
 
     return (
         <BooksContext.Provider value={{ books, isFilterSidebarOpen, setFilterSidebarOpen }}>

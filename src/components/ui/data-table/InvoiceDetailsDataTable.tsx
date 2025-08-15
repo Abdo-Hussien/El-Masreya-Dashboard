@@ -123,9 +123,7 @@ export default function InvoiceDetailsDataTable() {
         const selected = items.find((item) => item.label === currentLabel)
 
         const onAccepted = (newValue: ComboboxItem) => {
-            const selectedBook = books.find(
-                (b) => String(b.barcode) === String(newValue.value)
-            )
+            const selectedBook = books.find((b) => b.id === newValue.value)
 
             if (!selectedBook) return
 
@@ -210,7 +208,7 @@ export default function InvoiceDetailsDataTable() {
             cell: (props) => {
                 const items: ComboboxItem[] = books.map((b) => ({
                     label: b.barcode,
-                    value: b.barcode,
+                    value: b.id,
                 }))
                 return comboboxCellRenderer(props, items, `barcode-${Number(props.row.id) + 1}`)
             },
@@ -223,7 +221,7 @@ export default function InvoiceDetailsDataTable() {
             cell: (props) => {
                 const items: ComboboxItem[] = books.map((b) => ({
                     label: b.bookTitle,
-                    value: b.barcode,
+                    value: b.id,
                 }))
                 return comboboxCellRenderer(props, items, `quantity-${props.row.id}`)
             },

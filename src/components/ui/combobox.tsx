@@ -1,7 +1,7 @@
 
 "use client"
 
-import { forwardRef, useEffect, useState } from "react"
+import { Dispatch, forwardRef, SetStateAction, useEffect, useState } from "react"
 import { Command as CommandPrimitive } from "cmdk"
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/Utils'
@@ -11,15 +11,18 @@ import Button from '@/components/ui/button'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { Mode } from "@/types/Mode"
 
-export interface ComboboxItem<K = any> {
+export interface ComboboxItem<K = number> {
   label: string
   value: K
 }
 
-interface ComboboxProps<T = ComboboxItem> {
-  item?: T
-  items: T[]
+export type OnSelectEvent = Dispatch<SetStateAction<ComboboxItem | undefined>>
+
+interface ComboboxProps {
+  item: ComboboxItem | undefined
+  items: ComboboxItem[]
   mode?: Mode
+  onSelect: OnSelectEvent
   handleOnBlur?: () => void
   placeholder?: string
   variant?: VariantProps<typeof comboboxVariants>['variant']
@@ -45,7 +48,7 @@ const comboboxVariants = cva(
 )
 
 
-export default forwardRef<HTMLButtonElement, Omit<React.ComponentProps<typeof CommandPrimitive.Item>, "ref"> & ComboboxProps<ComboboxItem>>(
+export default forwardRef<HTMLButtonElement, Omit<React.ComponentProps<typeof CommandPrimitive.Item>, 'onSelect' | 'ref'> & ComboboxProps>(
   function Combobox({
     item,
     items,
@@ -62,9 +65,12 @@ export default forwardRef<HTMLButtonElement, Omit<React.ComponentProps<typeof Co
 
     const [open, setOpen] = useState<boolean>(false)
 
-    function handleOnSelect<T = string>(value: T) {
+    function handleOnSelect(value: string) {
       setOpen(false)
-      if (typeof value == "string") onSelect?.(value)
+
+      if (!onSelect) return
+      const selectedItem = items.find((i) => i.value === Number(value))
+      onSelect(selectedItem)
     }
 
     const onOpenChange = (open: boolean) => {
@@ -92,12 +98,16 @@ export default forwardRef<HTMLButtonElement, Omit<React.ComponentProps<typeof Co
             <CommandInput placeholder={placeholder} />
             <CommandEmpty>No result found.</CommandEmpty>
             <CommandGroup className="overflow-y-auto max-h-52">
-              {items.map((v) => (
-                <CommandItem key={String(v.value)} value={`${v.value}`} onSelect={handleOnSelect} {...props}>
-                  <Check className={cn('mr-2 h-4 w-4', item?.value === v.value ? 'opacity-100' : 'opacity-0')} />
-                  {v.label}
-                </CommandItem>
-              ))}
+              {items.map((it) => {
+                const value = it.value.toString()
+                return (
+                  <CommandItem key={value} value={value} onSelect={handleOnSelect} {...props}>
+                    <Check className={cn('mr-2 h-4 w-4', item?.value === it.value ? 'opacity-100' : 'opacity-0')} />
+                    {it.label}
+                  </CommandItem>
+                )
+              }
+              )}
             </CommandGroup>
           </Command>
         </PopoverContent>
