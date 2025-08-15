@@ -1,4 +1,5 @@
 export type Book = {
+    id: number
     barcode: string
     bookTitle: string
     unitsAvailable: number
