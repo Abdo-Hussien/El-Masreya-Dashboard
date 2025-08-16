@@ -101,7 +101,7 @@ export default forwardRef<HTMLButtonElement, Omit<React.ComponentProps<typeof Co
               {items.map((it) => {
                 const value = it.value.toString()
                 return (
-                  <CommandItem key={value} value={value} onSelect={handleOnSelect} {...props}>
+                  <CommandItem key={value} className={cn('duration-100 transition-all', item?.value === it.value ? 'bg-muted' : 'hover:bg-accent')} value={value} onSelect={handleOnSelect} {...props}>
                     <Check className={cn('mr-2 h-4 w-4', item?.value === it.value ? 'opacity-100' : 'opacity-0')} />
                     {it.label}
                   </CommandItem>

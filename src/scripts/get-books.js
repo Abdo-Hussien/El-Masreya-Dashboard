@@ -8,7 +8,7 @@ export const query = `
             ROUND(CDBL((1 - b.Discount1) * b.UnitPrice), 2)     AS wholesalePrice,
             it.SequenceNo & '.' & b.OrderingCode                AS productCode,
             b.UnitsInStock                                      AS unitsAvailable, 
-            b.QuantityPerPack                                   AS PackSize, 
+            b.QuantityPerPack                                   AS packSize, 
             it.SequenceNo, 
             b.OrderingCode, 
             b.CategoryID     
