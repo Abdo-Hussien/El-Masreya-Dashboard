@@ -10,7 +10,7 @@ import { useContext, useState, useEffect } from "react"
 export default function InvoiceSummary() {
 
     const { summaryFields, execute } = useContext(InvoiceContext)
-
+    const { setSelectedStatus } = useContext(InvoiceContext)
     const [isPaid, setIsPaid] = useState(false)
 
     const isPaidCheckbox = (value: boolean) => {
@@ -41,7 +41,9 @@ export default function InvoiceSummary() {
                 <div className="flex my-4 justify-center items-center gap-4 h-6">
                     <Checkbox className="font-medium" label="مدفوع" onCheckedChange={isPaidCheckbox} />
                     <Divider vertical />
-                    <Checkbox className="font-medium" label="صافي المجموع" />
+                    <Checkbox className="font-medium" label="حساب جاري" onCheckedChange={(value) => {
+                        if (value) setSelectedStatus({ label: "أضف إلي الرصيد", value: 3 })
+                    }} />
                 </div>
             </div>
         </>
