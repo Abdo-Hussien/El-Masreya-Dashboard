@@ -1,5 +1,6 @@
 export class InvoiceDetail {
     id?: number
+    book_id: number
     barcode: string
     bookTitle: string
     quantity: number
@@ -7,10 +8,10 @@ export class InvoiceDetail {
     sale: number
     total: number
 
-
     // overloads
-    constructor(barcode?: string, bookTitle?: string, unitPrice?: number)
+    constructor(book_id?: number, barcode?: string, bookTitle?: string, unitPrice?: number)
     constructor(
+        book_id?: number,
         barcode?: string,
         bookTitle?: string,
         quantity?: number,
@@ -19,6 +20,7 @@ export class InvoiceDetail {
         sale?: number
     )
     constructor(
+        book_id: number = 0,
         barcode: string = "",
         bookTitle: string = "",
         a?: number,
@@ -26,11 +28,19 @@ export class InvoiceDetail {
         c?: number,
         d?: number
     ) {
+        this.book_id = book_id
         this.barcode = barcode
         this.bookTitle = bookTitle
 
-        if (b === undefined && c === undefined && d === undefined) {
-            // short form: (barcode, title, unitPrice)
+        if (barcode === "" && bookTitle === "" && a === undefined && b === undefined && c === undefined && d === undefined) {
+            // empty constructor case (only book_id given)
+            this.quantity = 0
+            this.unitPrice = 0
+            this.total = 0
+            this.sale = 0
+        }
+        else if (b === undefined && c === undefined && d === undefined) {
+            // short form: (book_id, barcode, title, unitPrice)
             this.quantity = 1
             this.unitPrice = a ?? 0
             this.total = this.unitPrice
