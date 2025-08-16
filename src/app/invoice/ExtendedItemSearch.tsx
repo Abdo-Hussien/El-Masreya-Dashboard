@@ -27,11 +27,13 @@ export default function ExtendedItemSearch() {
             <div data-component="overlay" className={`fixed inset-0 z-50 flex justify-center items-center glass p-2 bg-gray-200/40 transition-all duration-300 ease-in-out ${isDialogOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} >
                 <div id="extended_search" className={`relative  w-full h-full flex flex-col bg-white rounded-2xl border-4 border-gray-300/50 transition-all duration-300 ease-in-out ${isDialogOpen ? 'scale-100' : 'scale-90'}`}>
                     <Button className="absolute w-6 h-6 top-1 left-1 rounded-lg p-2" variant="outline" onClick={closeDialog}><X /></Button>
-                    <div id="header" className="flex justify-between p-4">
+                    <div id="header" className="flex justify-between p-4 shrink-0">
                         <h2 className="flex grow mb-2">بحث موسع عن المنتج</h2>
                     </div>
                     <Divider />
-                    <BooksDataTable />
+                    <div className="flex-1 overflow-y-auto">
+                        <BooksDataTable />
+                    </div>
                 </div>
             </div>
             <FiltersSidebar open={isFilterSidebarOpen} onClose={() => setFilterSidebarOpen(false)} />
