@@ -127,8 +127,8 @@ export default function InvoiceDetailsDataTable() {
 
             if (!selectedBook) return
 
-            const { barcode: barcode, bookTitle, price } = selectedBook
-            const invoiceDetail = new InvoiceDetail(barcode, bookTitle, price)
+            const { id, barcode: barcode, bookTitle, price } = selectedBook
+            const invoiceDetail = new InvoiceDetail(id, barcode, bookTitle, price)
 
             updateRow(row.original.id!, invoiceDetail)
 

@@ -54,8 +54,8 @@ export default function BooksDataTable() {
         {
             accessorKey: "unitsAvailable",
             header: () => "العدد في المخزن",
-            cell: ({ row }) => {
-                const quantityInStock = Number(row.getValue("unitsAvailable"))
+            cell: ({ getValue }) => {
+                const quantityInStock = getValue() as number
 
                 return <div className="text-right">{quantityInStock}</div>
             },
@@ -63,8 +63,8 @@ export default function BooksDataTable() {
         {
             accessorKey: "packSize",
             header: () => "القطع",
-            cell: ({ row }) => {
-                const quantityPerPack = Number(row.getValue("packSize"))
+            cell: ({ getValue }) => {
+                const quantityPerPack = getValue() as number
                 return <div className="text-right">{quantityPerPack}</div>
             },
         }

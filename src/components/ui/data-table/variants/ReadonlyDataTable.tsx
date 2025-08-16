@@ -2,6 +2,7 @@ import { ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, g
 import { TableBody, TableRow, TableCell } from "../../table"
 import { DataTable } from "../../data-table"
 import { useState } from "react"
+import { cn } from "@/lib/Utils"
 
 export default function ReadonlyDataTable({ data, columns, quickFilters }: { data: any[], columns: any[], quickFilters?: React.ReactNode }) {
     const [sorting, setSorting] = useState<SortingState>([])
@@ -27,11 +28,15 @@ export default function ReadonlyDataTable({ data, columns, quickFilters }: { dat
         <>
             <DataTable table={table} filterField="bookTitle" quickFilters={quickFilters}>
                 <TableBody>
-                    {table.getRowModel().rows?.length ? (
+                    {table.getRowModel().rows.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} >
+                            <TableRow className={cn('h-12', row.index % 2 !== 0 ? 'bg-gray-50/40 dark:bg-gray-800/40' : 'bg-white dark:bg-gray-900/40')} key={row.id} >
                                 {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                                    <TableCell key={cell.id}>
+                                        <div className="cursor-text">
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </div>
+                                    </TableCell>
                                 ))}
                             </TableRow>
                         ))

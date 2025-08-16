@@ -15,7 +15,7 @@ interface FilterSidebarProps {
 export default function FiltersSidebar({ open, onClose }: FilterSidebarProps) {
     const [show, setShow] = useState(open)
     const [animateIn, setAnimateIn] = useState(false)
-
+    // const { } = useContext(BooksContext)
     useEffect(() => {
         if (open) {
             setShow(true)
@@ -29,7 +29,6 @@ export default function FiltersSidebar({ open, onClose }: FilterSidebarProps) {
     }, [open])
 
     if (!show) return null
-
     const products: ComboboxItem[] = [
         { label: "المنتج 1", value: 0 },
         { label: "المنتج 2", value: 1 },
