@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/Utils"
 
 function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
@@ -57,7 +57,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "hover:bg-lime-200/10 data-[state=selected]:bg-lime-200/30 border-b transition-colors",
+        "hover:bg-indigo-200/10 data-[state=selected]:bg-indigo-200/30 border-b transition-colors",
         className
       )}
       {...props}
@@ -70,7 +70,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "text-foreground h-10 px-4 text-right align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pl-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "text-foreground h-10 px-2 text-right align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pl-0 [&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
       {...props}
@@ -83,7 +83,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "p-4 align-middle whitespace-nowrap [&:has([role=checkbox])]:pl-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "p-2 whitespace-nowrap [&:has([role=checkbox])]:pl-0 [&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
       {...props}
