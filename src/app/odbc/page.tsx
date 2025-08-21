@@ -38,20 +38,20 @@ export default function ODBC() {
       const customerId = createRes.data.id
       log('Customer created.')
 
-      setStep('read-customer')
-      log('📥 Reading test customer...')
-      const readRes = await axios.get(`/api/customer/${customerId}`)
-      log(`Fetched customer: ${JSON.stringify(readRes.data.data[0])}`)
+      // setStep('read-customer')
+      // log('📥 Reading test customer...')
+      // const readRes = await axios.get(`/api/customer/${customerId}`)
+      // log(`Fetched customer: ${JSON.stringify(readRes.data.data[0])}`)
 
-      setStep('update-customer')
-      log('✏️ Updating test customer...')
-      await axios.put(`/api/customer/${customerId}`, { DisplayName: 'mohamed', CustomerName: 'Mohamed H.', Area: 'El Nozha' })
-      log('Customer updated.')
+      // setStep('update-customer')
+      // log('✏️ Updating test customer...')
+      // await axios.put(`/api/customer/${customerId}`, { DisplayName: 'mohamed', CustomerName: 'Mohamed H.', Area: 'El Nozha' })
+      // log('Customer updated.')
 
-      setStep('delete-customer')
-      log('🗑 Deleting test customer...')
-      await axios.delete(`/api/customer/${customerId}`)
-      log('Customer deleted.')
+      // setStep('delete-customer')
+      // log('🗑 Deleting test customer...')
+      // await axios.delete(`/api/customer/${customerId}`)
+      // log('Customer deleted.')
 
       setStatus('success')
     } catch (error: any) {
