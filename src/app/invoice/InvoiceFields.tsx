@@ -57,7 +57,7 @@ export default function InvoiceFields() {
                 <Combobox
                     item={selectedStatus}
                     items={statuses}
-                    onSelect={setSelectedStatus}
+                    onSelect={() => setSelectedStatus}
                     className={comboWidth}
                     placeholder={loadingStatuses ? "جارٍ التحميل..." : "اختر حالة الفاتورة..."}
                 />
