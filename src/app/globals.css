@@ -186,3 +186,9 @@ h5 {
 h6 {
   @apply text-sm font-bold;
 }
+
+@layer utilities {
+  .flash-success {
+    @apply !bg-green-300/70 !border !border-green-200/80 transition-colors duration-1000;
+  }
+}
