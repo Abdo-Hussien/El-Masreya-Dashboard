@@ -7,12 +7,13 @@ import { useInvoiceDetails } from "@/components/hooks/useInvoiceDetails"
 import { useInvoiceFields } from "@/components/hooks/useInvoiceFields"
 import { ComboboxItem } from "@/components/ui/combobox"
 import axios from "axios"
+import { Toast } from "@/utils/toast"
 
 type InvoiceContextType = {
     invoiceDetails: InvoiceDetail[],
     isDexieLoading: boolean
     updateCell: (newValue: any, row: Row<InvoiceDetail>, column: ColumnDef<InvoiceDetail>) => void
-    addRow: () => void
+    addRow: () => Promise<number>
     updateRow: (rowId: number, updatedRow: InvoiceDetail) => void
     deleteRow: (rowId: number) => void
     resetForm: () => void
@@ -27,7 +28,7 @@ type InvoiceContextType = {
     selectedCustomer: ComboboxItem | undefined
     selectedStatus: ComboboxItem | undefined
     setSelectedCustomer: React.Dispatch<React.SetStateAction<ComboboxItem | undefined>>
-    setSelectedStatus: React.Dispatch<React.SetStateAction<ComboboxItem | undefined>>
+    setSelectedStatus: React.Dispatch<React.SetStateAction<ComboboxItem>>
 }
 
 const InvoiceContext = createContext<InvoiceContextType>({} as InvoiceContextType)
@@ -67,15 +68,16 @@ export default function InvoiceContextProvider({ children }: { children: React.R
             const res = await axios.post("/api/create-invoice", payload)
             console.log("Invoice created successfully:", res.data)
 
+            Toast.fire({ icon: "success", title: res.data.message })
             resetForm() // Reset the form after creating the invoice
             setSelectedCustomer(undefined) // Clear selected customer
-            setSelectedStatus(undefined) // Clear selected status
-        } catch (err) {
+            setSelectedStatus({ label: "لم يتم التحاسب", value: 1 }) // Clear selected status
+        } catch (err: any) {
             console.error("Failed to create invoice:", err)
+            const { message: title } = err.response?.data
+            Toast.fire({ icon: "error", title })
         }
-        finally {
-            setIsCreatingInvoice(false)
-        }
+        setIsCreatingInvoice(false)
     }
 
     const contextValue = useMemo(() => ({
