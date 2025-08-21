@@ -6,24 +6,32 @@ import { InvoiceContext } from "@/store/invoice-context"
 import { parsePrice } from "@/utils/value-formatter"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useContext, useState, useEffect } from "react"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
+
+
+type PaymentChoice = "paid" | "ongoing" | ""
 
 export default function InvoiceSummary() {
 
     const { summaryFields, execute } = useContext(InvoiceContext)
     const { setSelectedStatus } = useContext(InvoiceContext)
-    const [isPaid, setIsPaid] = useState(false)
+    const [paymentChoice, setPaymentChoice] = useState<PaymentChoice>("")
 
-    const isPaidCheckbox = (value: boolean) => {
-        setIsPaid(value)
+    const onRadioChange = (value: PaymentChoice) => {
+        setPaymentChoice(value)
+
+        if (value === "paid") {
+            execute({ type: "set amount paid", newValue: summaryFields.total })
+            setSelectedStatus({ label: "خالص مكتب", value: 4 })
+            // amount paid is synced in the effect below to track future total changes
+        } else if (value === "ongoing") {
+            execute({ type: "set amount paid", newValue: 0 })
+            setSelectedStatus({ label: "أضف إلي الرصيد", value: 3 })
+            // Optional: if you want to clear amount paid when switching to ongoing, uncomment:
+            // execute({ type: "set amount paid", newValue: 0 })
+        }
     }
-
-    // This `useEffect` callback activates two times in a row
-    useEffect(() => {
-        // console.log("From useEffect: ")
-        if (isPaid) execute({ type: "set amount paid", newValue: summaryFields.total })
-    },
-        [execute, isPaid, summaryFields.total])
-
 
     return (
         <>
@@ -38,13 +46,15 @@ export default function InvoiceSummary() {
                     <SummaryLine label="المجموع النهائي" formatter={parsePrice} value={summaryFields.finalTotal} valueStyle="font-bold" />
 
                 </div>
-                <div className="flex my-4 justify-center items-center gap-4 h-6">
-                    <Checkbox className="font-medium" label="مدفوع" onCheckedChange={isPaidCheckbox} />
+                <RadioGroup className="flex my-4 justify-center items-center gap-4" value={paymentChoice} onValueChange={onRadioChange}>
+                    <RadioGroupItem value="paid" id="paid" />
+                    <Label htmlFor="paid">مدفوع</Label>
+
                     <Divider vertical />
-                    <Checkbox className="font-medium" label="حساب جاري" onCheckedChange={(value) => {
-                        if (value) setSelectedStatus({ label: "أضف إلي الرصيد", value: 3 })
-                    }} />
-                </div>
+
+                    <RadioGroupItem value="ongoing" id="ongoing" />
+                    <Label htmlFor="ongoing">حساب جاري</Label>
+                </RadioGroup>
             </div>
         </>
     )

@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import { formatAccessDate } from '@/utils/value-formatter'
 import { getConnection } from '@/lib/OdbcDb'
 import { Connection } from 'odbc'
+import '@/../monitor-process'
 
 interface _InvoicePayload {
     customer_id: number
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
         const invDetails: _InvoiceDetailPayload[] = body.inv_details
 
         if (!invoice || !invDetails || invDetails.length === 0) {
-            throw new BadRequestError(`Invalid request body: Missing invoice or details`)
+            throw new BadRequestError(`Invalid Information: Missing invoice or details`)
         }
 
         await context.beginTransaction()
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
 
         // Step 1: Validate customer
         await validateCustomer(invoice.customer_id)
+
         // Step 2: Create invoice
         const invoiceId = await insertInvoice(invoice)
 
@@ -69,6 +71,7 @@ export async function POST(request: Request) {
 
 /** Validate customer existence */
 async function validateCustomer(customerId: number) {
+    if (!customerId) throw new BadRequestError('Customer is required')
     const res = await context.query<{ found: number }>(
         `SELECT COUNT(CustomerID) as found FROM Customers WHERE CustomerID = ${customerId}`
     )
@@ -78,6 +81,7 @@ async function validateCustomer(customerId: number) {
 /** Insert invoice and return new ID */
 async function insertInvoice(invoice: _InvoicePayload) {
     const currentDate = new Date()
+    if (!invoice.status_id) throw new BadRequestError('Invoice status is required')
     const query = `
     INSERT INTO Invoices (CustomerDisplayName, InvoiceDate, ChangeDate, Total, PaidAmount, CashDiscount, Status, UserID, InvoiceExport)
         VALUES (${invoice.customer_id}, ${formatAccessDate(currentDate)}, ${formatAccessDate(currentDate)}, ${0}, ${invoice.amount_paid}, ${invoice.discount}, ${invoice.status_id}, ${0}, 'فاتورة')
@@ -92,9 +96,10 @@ async function insertInvoice(invoice: _InvoicePayload) {
 
 /** Fetch book info for items missing price */
 async function getBookData(invDetails: _InvoiceDetailPayload[]) {
-    const idsToFetch = invDetails.map(d => d.book_id)
-
-    if (idsToFetch.length === 0) return {}
+    const idsToFetch = invDetails.map(d => {
+        if (d.book_id != 0 && d.quantity != 0) return d.book_id
+    }).filter(Boolean)
+    if (idsToFetch.length === 0) throw new BadRequestError('No valid books provided')
 
     const rows = await context.query<{ BookID: number; UnitPrice: number }>(
         `SELECT BookID, UnitPrice FROM Books WHERE BookID IN (${idsToFetch.join(',')})`
@@ -112,7 +117,7 @@ async function insertInvoiceDetails(invoiceId: number, details: _InvoiceDetailPa
 
         const pricePerUnit = (d.price && bookData[d.book_id] != d.price) ? d.price : bookData[d.book_id]
         // console.log(`price of ${d.book_id} = `, pricePerUnit)
-        if (pricePerUnit == null) throw new BadRequestError(`Missing price for book ID ${d.book_id}`)
+        if (pricePerUnit == null) throw new BadRequestError(`Missing price for book ${d.book_id}`)
 
         const cashDiscount = d.discount ?? 0
         const netPrice = pricePerUnit - cashDiscount

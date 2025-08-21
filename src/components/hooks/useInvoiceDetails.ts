@@ -78,6 +78,7 @@ export function useInvoiceDetails() {
         const newRow = new InvoiceDetail()
         const id = await db.invoiceDetails.add(newRow)
         setInvoiceDetails((prev) => [...prev, { ...newRow, id }])
+        return id
     }, [])
 
     const updateRow = useCallback(async (rowId: number, updatedRow: InvoiceDetail) => {
