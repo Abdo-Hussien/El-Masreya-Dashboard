@@ -52,14 +52,14 @@ export default function InvoiceFields() {
                     items={customers}
                     onSelect={setSelectedCustomer}
                     className={comboWidth}
-                    placeholder={loadingCustomers ? "جارٍ التحميل..." : "اختر العميل..."}
+                    placeholder={loadingCustomers ? "جارٍ التحميل..." : "اختر العميل"}
                 />
                 <Combobox
                     item={selectedStatus}
                     items={statuses}
                     onSelect={() => setSelectedStatus}
                     className={comboWidth}
-                    placeholder={loadingStatuses ? "جارٍ التحميل..." : "اختر حالة الفاتورة..."}
+                    placeholder={loadingStatuses ? "جارٍ التحميل..." : "اختر حالة الفاتورة"}
                 />
             </div>
 

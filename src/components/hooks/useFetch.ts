@@ -2,35 +2,41 @@
 
 import { useState, useEffect } from "react"
 import axios, { AxiosError } from "axios"
+import '@/../monitor-process'
+export interface FetchResponse<DType> {
+    data: DType | null
+    loading: boolean
+    error: string | null
+}
 
 export function useFetch<T>(url: string) {
-    const [data, setData] = useState<T | null>(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    const [response, setResponse] = useState<FetchResponse<T>>({
+        data: null,
+        loading: true,
+        error: null
+    })
 
     useEffect(() => {
-        const controller = new AbortController()
+        const controller = new AbortController();
 
-            ; (async () => {
-                try {
-                    setLoading(true)
-                    setError(null)
+        (async () => {
+            try {
 
-                    const res = await axios.get<T>(url, { signal: controller.signal })
-                    setData(res.data)
-                } catch (err) {
-                    if (!(err instanceof DOMException && err.name === "AbortError")) {
-                        const message = err instanceof AxiosError ? err.message : "Unknown error"
-                        setError(message)
-                        console.error(`Failed to fetch from ${url}:`, err)
-                    }
-                } finally {
-                    setLoading(false)
+                const res = await axios.get<T>(url, { signal: controller.signal })
+                setResponse((prev) => ({ ...prev, data: res.data }))
+            } catch (err) {
+                if (!(err instanceof DOMException && err.name === "AbortError")) {
+                    const message = err instanceof AxiosError ? err.message : "Unknown error"
+                    setResponse((prev) => ({ ...prev, error: message }))
+                    console.error(`Failed to fetch from ${url}:`, err)
                 }
-            })()
+            } finally {
+                setResponse((prev) => ({ ...prev, loading: false }))
+            }
+        })()
 
         return () => controller.abort()
     }, [url])
 
-    return { data, loading, error }
+    return response
 }
