@@ -3,6 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
     /* config options here */
     output: 'standalone',
+
+    experimental: {
+        globalNotFound: true
+    },
+
     webpack: (config, { isServer }) => {
         // Ignore .html files in problematic modules
         if (isServer) {
