@@ -7,6 +7,7 @@ import ExtendedItemSearch from "./ExtendedItemSearch";
 import InvoiceContextProvider from "@/store/invoice-context";
 import BooksContextProvider from "@/store/book-context";
 import InvoiceSummary from "./InvoiceSummary";
+import CategoriesContextProvider from "@/store/category-context";
 
 export default function InvoicePage() {
     return (
@@ -16,7 +17,10 @@ export default function InvoicePage() {
                     <InvoiceForm />
                     <InvoiceSummary />
                 </div>
-                <ExtendedItemSearch />
+
+                <CategoriesContextProvider>
+                    <ExtendedItemSearch />
+                </CategoriesContextProvider>
             </InvoiceContextProvider>
         </BooksContextProvider>
     );

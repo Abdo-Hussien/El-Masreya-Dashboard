@@ -4,5 +4,4 @@ export const query = `
         Status.StateDisplayTxt      AS alias
     FROM
         Status;
-    `
-// Status.StateName
+`

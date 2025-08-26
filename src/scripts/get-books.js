@@ -11,7 +11,8 @@ export const query = `
             b.QuantityPerPack                                   AS packSize, 
             it.SequenceNo, 
             b.OrderingCode, 
-            b.CategoryID     
+            b.ItemType                                          AS category_id,
+            b.State                                             AS status
         FROM (  
                 ItemTypes it
                 RIGHT JOIN Books b ON it.ItemTypeId = b.ItemType

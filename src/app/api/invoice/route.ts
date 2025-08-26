@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
         await context.commit()
         const end = performance.now()
-        console.log(`POST /create-invoice took ${(end - start).toFixed(2)} ms`)
+        console.log(`POST /invoice took ${(end - start).toFixed(2)} ms`)
 
         return NextResponse.json({ success: true, message: `Invoice created successfully`, id: invoiceId })
     }

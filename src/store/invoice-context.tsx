@@ -1,35 +1,9 @@
 import { createContext, useMemo, useState } from "react"
-import { InvoiceDetail } from "@/classes/InvoiceDetail"
-import { SummaryFields } from "@/types/SummaryFields"
-import { SummaryAction } from "@/types/SummaryAction"
-import { ColumnDef, Row } from "@tanstack/react-table"
 import { useInvoiceDetails } from "@/components/hooks/useInvoiceDetails"
 import { useInvoiceFields } from "@/components/hooks/useInvoiceFields"
-import { ComboboxItem } from "@/components/ui/combobox"
 import axios from "axios"
 import { Toast } from "@/utils/toast"
-
-type InvoiceContextType = {
-    invoiceDetails: InvoiceDetail[],
-    isDexieLoading: boolean
-    updateCell: (newValue: any, row: Row<InvoiceDetail>, column: ColumnDef<InvoiceDetail>) => void
-    addRow: () => Promise<number>
-    updateRow: (rowId: number, updatedRow: InvoiceDetail) => void
-    deleteRow: (rowId: number) => void
-    resetForm: () => void
-    getNumOfBooks: () => number
-    summaryFields: SummaryFields
-    execute: React.Dispatch<SummaryAction>
-    // Creates invoice with the current state
-    createInvoice: () => any
-    isCreatingInvoice: boolean
-
-    // Fields for the invoice form
-    selectedCustomer: ComboboxItem | undefined
-    selectedStatus: ComboboxItem | undefined
-    setSelectedCustomer: React.Dispatch<React.SetStateAction<ComboboxItem | undefined>>
-    setSelectedStatus: React.Dispatch<React.SetStateAction<ComboboxItem>>
-}
+import { InvoiceContextType } from "./types/invoice"
 
 const InvoiceContext = createContext<InvoiceContextType>({} as InvoiceContextType)
 
@@ -65,13 +39,14 @@ export default function InvoiceContextProvider({ children }: { children: React.R
 
         try {
             setIsCreatingInvoice(true)
-            const res = await axios.post("/api/create-invoice", payload)
+            const res = await axios.post("/api/invoice", payload)
             console.log("Invoice created successfully:", res.data)
 
-            Toast.fire({ icon: "success", title: res.data.message })
             resetForm() // Reset the form after creating the invoice
             setSelectedCustomer(undefined) // Clear selected customer
             setSelectedStatus({ label: "لم يتم التحاسب", value: 1 }) // Clear selected status
+
+            await Toast.fire({ icon: "success", title: res.data.message })
         } catch (err: any) {
             console.error("Failed to create invoice:", err)
             const { message: title } = err.response?.data

@@ -1,11 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { Label } from "@/components/ui/label"
 import Button from "@/components/ui/button"
 import Combobox, { ComboboxItem } from "@/components/ui/combobox"
 import { X, Filter } from "lucide-react"
 import Divider from "../divider"
+import { BooksContext } from "@/store/book-context"
+import { CategoriesContext } from "@/store/category-context"
+import { Checkbox } from "../checkbox"
 
 interface FilterSidebarProps {
     open: boolean
@@ -15,7 +18,9 @@ interface FilterSidebarProps {
 export default function FiltersSidebar({ open, onClose }: FilterSidebarProps) {
     const [show, setShow] = useState(open)
     const [animateIn, setAnimateIn] = useState(false)
-    // const { } = useContext(BooksContext)
+    const { booksFilters, bookStatuses, comboBooksTitles, comboBooksBarcodes, originalBooks, applyFilters, setFilters, clearFilters, setBooks } = useContext(BooksContext)
+
+    const { categories } = useContext(CategoriesContext)
     useEffect(() => {
         if (open) {
             setShow(true)
@@ -28,26 +33,21 @@ export default function FiltersSidebar({ open, onClose }: FilterSidebarProps) {
         }
     }, [open])
 
+
     if (!show) return null
-    const products: ComboboxItem[] = [
-        { label: "المنتج 1", value: 0 },
-        { label: "المنتج 2", value: 1 },
-    ]
 
-    const categories: ComboboxItem[] = [
-        { label: "تصنيف 1", value: 0 },
-        { label: "تصنيف 2", value: 1 },
-    ]
 
-    const barcodes: ComboboxItem[] = [
-        { label: "12345", value: 0 },
-        { label: "67890", value: 1 },
-    ]
+    const saveFilters = () => {
+        const result = applyFilters()
+        setBooks(result)
+        onClose()
+    }
 
-    const statuses: ComboboxItem[] = [
-        { label: "متوفر", value: 0 },
-        { label: "غير متوفر", value: 1 },
-    ]
+    const removeFilters = () => {
+        clearFilters()
+        setBooks(originalBooks)
+        onClose()
+    }
 
     return (
         <div className="fixed inset-0 z-50 flex">
@@ -68,36 +68,62 @@ export default function FiltersSidebar({ open, onClose }: FilterSidebarProps) {
                 <main className="flex-1 overflow-y-auto p-4 space-y-6">
                     <section>
                         <Label className="mb-3 block">اسم المنتج</Label>
-                        <Combobox className="w-full" items={products} placeholder="اختر اسم المنتج" item={undefined} onSelect={function (value: React.SetStateAction<ComboboxItem | undefined>): void {
-                            throw new Error("Function not implemented.")
-                        }} />
+                        <Combobox
+                            className="w-full"
+                            items={comboBooksTitles}
+                            placeholder="اختر اسم المنتج"
+                            item={booksFilters?.item_name}
+                            onSelect={(val) =>
+                                setFilters({ ...booksFilters, item_name: val })
+                            }
+                        />
                     </section>
                     <section>
                         <Label className="mb-3 block">التصنيف</Label>
-                        <Combobox className="w-full" items={categories} placeholder="حدد التصنيف" item={undefined} onSelect={function (value: React.SetStateAction<ComboboxItem | undefined>): void {
-                            throw new Error("Function not implemented.")
-                        }} />
+                        <Combobox
+                            className="w-full"
+                            items={categories}
+                            placeholder="حدد التصنيف"
+                            item={booksFilters?.category}
+                            onSelect={(val) =>
+                                setFilters({ ...booksFilters, category: val })
+                            }
+                        />
                     </section>
                     <section>
                         <Label className="mb-3 block">الباركود</Label>
-                        <Combobox className="w-full" items={barcodes} placeholder="ادخل الباركود" item={undefined} onSelect={function (value: React.SetStateAction<ComboboxItem | undefined>): void {
-                            throw new Error("Function not implemented.")
-                        }} />
+                        <Combobox
+                            className="w-full"
+                            items={comboBooksBarcodes}
+                            placeholder="ادخل الباركود"
+                            item={booksFilters?.barcode}
+                            onSelect={(val) =>
+                                setFilters({ ...booksFilters, barcode: val })
+                            }
+                        />
                     </section>
                     <section>
                         <Label className="mb-3 block">الحالة</Label>
-                        <Combobox className="w-full" items={statuses} placeholder="حالة المنتج" item={undefined} onSelect={function (value: React.SetStateAction<ComboboxItem | undefined>): void {
-                            throw new Error("Function not implemented.")
-                        }} />
+                        <Combobox
+                            className="w-full"
+                            items={bookStatuses}
+                            placeholder="حالة المنتج"
+                            item={booksFilters?.status}
+                            onSelect={(val) =>
+                                setFilters({ ...booksFilters, status: val })
+                            }
+                        />
                     </section>
                 </main>
 
                 {/* Footer */}
                 <footer className="p-4 flex flex-col gap-2">
-                    <Button className="w-full" variant="outline">
+                    <Button className="w-full" variant="outline" onClick={removeFilters}>
                         الغاء الفلاتر
                     </Button>
-                    <Button className="w-full">حفظ الفلاتر</Button>
+                    <Button className="w-full" onClick={saveFilters}>
+                        حفظ الفلاتر
+                    </Button>
                 </footer>
             </aside>
         </div>

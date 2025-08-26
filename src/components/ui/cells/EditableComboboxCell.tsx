@@ -3,7 +3,7 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { Command as CommandPrimitive } from "cmdk"
-import Combobox, { ComboboxItem, OnSelectEvent } from "@/components/ui/combobox"
+import Combobox, { ComboboxItem } from "@/components/ui/combobox"
 import { Mode } from "@/types/Mode"
 import { NewEditableCellProps } from "@/types/EditableCellProps"
 import { CellHandler } from "@/types/CellHandler"
@@ -43,7 +43,7 @@ export default forwardRef<CellHandler, Omit<React.ComponentProps<typeof CommandP
         }
 
         // Accept
-        const handleOnSelect: OnSelectEvent = (value) => {
+        const handleOnSelect = (value: any) => {
             onValueAccepted(value)
             setMode("read")
         }

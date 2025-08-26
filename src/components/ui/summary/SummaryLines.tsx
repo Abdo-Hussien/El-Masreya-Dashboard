@@ -69,7 +69,7 @@ const EditableSummaryLine = ({ label, value, onChange, labelStyle, formatter, va
                     className="min-w-0 max-w-20 border-gray-300 bg-transparent focus:outline-none"
                 />
             ) : (
-                <p onDoubleClick={handleDoubleClick} className={cn("cursor-pointer", valueStyle)}>
+                <p onDoubleClick={handleDoubleClick} className={cn("cursor-pointer", valueStyle, `hover:bg-${valueStyle}`)}>
                     {formatter?.(internalValue)}
                 </p>
             )}
@@ -89,7 +89,7 @@ const SaleSummaryLine = () => {
             value={summaryFields.sale}
             onChange={(newValue: number) => execute({ type: "set sale", newValue })}
             formatter={parsePrice}
-            valueStyle="text-red-700"
+            valueStyle="text-red-700 rounded-lg px-1 hover:bg-red-100/60"
         >
             <Divider />
             <p className="text-gray-500">{percentageValue}</p>
@@ -106,7 +106,7 @@ const AmountPaidSummaryLine = () => {
             value={summaryFields.amountPaid}
             onChange={(newValue: number) => execute({ type: "set amount paid", newValue })}
             formatter={parsePrice}
-            valueStyle="text-green-800"
+            valueStyle="text-green-800 rounded-lg px-1 hover:bg-green-200/60"
         />
     )
 }

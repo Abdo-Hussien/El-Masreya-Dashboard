@@ -42,7 +42,7 @@ export default function InvoiceFields() {
         items: statuses,
         loading: loadingStatuses,
         error: errorStatuses,
-    } = useFetchComboboxItems<{ data: InvoiceStatus[] }>("/api/statuses", mapStatuses)
+    } = useFetchComboboxItems<{ data: InvoiceStatus[] }>("/api/invoice/status", mapStatuses)
     return (
         <>
             <Checkbox label="سعر جملة" />

@@ -1,8 +1,11 @@
+import { ComboboxItem } from "@/components/ui/combobox"
+
+type _filter = ComboboxItem | undefined
+
 export interface BooksFilters {
-    category?: string
-    item_name?: string
-    barcode?: string
-    status?: number
-    sort_by_price?: boolean
-    sort_ascendingly?: boolean
+    category?: _filter
+    item_name?: _filter
+    barcode?: _filter
+    status?: _filter
+    sort_by_price?: _filter
 }

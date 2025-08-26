@@ -3,27 +3,40 @@
 import { Book } from "@/types/Book"
 import { ColumnDef } from "@tanstack/react-table"
 import Button from "../button"
+import { ChevronsUpDown } from "lucide-react"
 import ReadonlyDataTable from "./variants/ReadonlyDataTable"
 import { useContext } from "react"
 import { BooksContext } from "@/store/book-context"
 import { InvoiceDetail } from "@/classes/InvoiceDetail"
 import { InvoiceContext } from "@/store/invoice-context"
 
-
 const BooksQuickFilters = () => {
-    const { setFilterSidebarOpen } = useContext(BooksContext)
-    const openSideFilters = () => setFilterSidebarOpen(true)
+    const { booksFilters, originalBooks, clearFilters, setBooks, setFilterSidebarOpen } = useContext(BooksContext)
+
+    const removeFilters = () => {
+        clearFilters()
+        setBooks(originalBooks)
+        setFilterSidebarOpen(false)
+    }
+
+    const hasFilters = Object.keys(booksFilters).length > 0
+
     return (
         <>
-            <Button variant="link">
+            <Button onClick={removeFilters} className="relative" variant="link">
                 مسح الفلاتر
+                {hasFilters && (
+                    <div className="absolute top-[-2px] right-[-2px] rounded-4xl w-2 h-2 bg-amber-500" />
+                )}
             </Button>
-            <Button onClick={openSideFilters} variant="outline">
+
+            <Button onClick={() => setFilterSidebarOpen(true)} variant="outline">
                 فلاتر أخرى
             </Button>
         </>
     )
 }
+
 
 export default function BooksDataTable() {
     const { books } = useContext(BooksContext)
@@ -52,19 +65,39 @@ export default function BooksDataTable() {
         },
         {
             accessorKey: "wholesalePrice",
-            header: "فئة",
+            header: ({ column }) => (
+                <Button variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    فئة
+                    <ChevronsUpDown />
+                </Button>
+            ),
             cell: ({ getValue }) => {
                 const unitPrice = getValue() as number
                 return <div className="capitalize">{unitPrice}</div>
             },
+            enableSorting: true,
         },
         {
-            accessorKey: "price", //with discount
-            header: 'السعر',
+            accessorKey: "price", // with discount
+            header: ({ column }) => (
+                <Button variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    السعر
+                    <ChevronsUpDown />
+                </Button>
+            ),
             cell: ({ getValue }) => {
                 const price = getValue() as number
                 return <div className="lowercase">{price}</div>
             },
+            enableSorting: true,
         },
         {
             accessorKey: "unitsAvailable",

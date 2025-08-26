@@ -9,21 +9,21 @@ const nextConfig: NextConfig = {
     },
 
     webpack: (config, { isServer }) => {
-        // Ignore .html files in problematic modules
+        // // Ignore .html files in problematic modules
         if (isServer) {
             config.externals.push('odbc')
         }
-        config.module.rules.push({
-            test: /\.html$/,
-            use: 'ignore-loader',
-        })
-
-        config.resolve.fallback = {
-            ...(config.resolve.fallback || {}),
-            "mock-aws-s3": false,
-            "aws-sdk": false,
-            "nock": false,
-        }
+        // config.module.rules.push({
+        //     test: /\.html$/,
+        //     use: 'ignore-loader',
+        // })
+        // config.resolve.fallback = {
+        //     ...config.resolve.fallback,
+        //     "mock-aws-s3": false,
+        //     "aws-sdk": false,
+        //     "nock": false,
+        // }
+        // console.log("Webpack config:", config);
         return config
     },
     redirects: async () => {

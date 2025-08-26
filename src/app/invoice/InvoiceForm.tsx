@@ -28,8 +28,8 @@ const IndexedDBSync = ({ isSynced, setIsSynced }: { isSynced: boolean, setIsSync
 
     return (
         <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${isSynced ? "bg-green-500 shadow-[inset_0_-4px_4px_0_theme(colors.green.300),0_1px_2px_0_rgba(0,0,0,0.05)]" : "bg-gray-500 shadow-[inset_0_-4px_4px_0_theme(colors.gray.300),0_1px_2px_0_rgba(0,0,0,0.05)]"}`} />
-            <span className="text-sm"> {isSynced ? "المعلومات محفوظة" : "جاري الحفظ..."} </span>
+            <span className={`w-2 h-2 rounded-full ${isSynced ? "bg-emerald-500" : "bg-gray-500"}`} />
+            <p className="text-sm"> {isSynced ? "المعلومات محفوظة" : "جاري الحفظ..."} </p>
         </div>
     )
 }

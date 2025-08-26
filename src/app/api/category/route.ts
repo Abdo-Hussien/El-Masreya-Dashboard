@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { query } from '@/scripts/get-statuses'
+import { query } from '@/scripts/get-categories'
 import { getConnection } from '@/lib/OdbcDb'
 
 export async function GET() {
@@ -13,6 +13,6 @@ export async function GET() {
         return NextResponse.json(
             { success: false, error: error.message },
             { status: 500 }
-        );
+        )
     }
 }

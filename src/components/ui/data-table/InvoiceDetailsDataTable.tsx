@@ -41,7 +41,7 @@ export default function InvoiceDetailsDataTable() {
     const { books } = useContext(BooksContext)
     const { invoiceDetails, addRow, updateRow, deleteRow, updateCell, isDexieLoading } = useContext(InvoiceContext)
     const cellRefs = useRef<Map<string, CellHandler>>(new Map())
-
+    const { comboBooksTitles, comboBooksBarcodes } = useContext(BooksContext)
     if (isDexieLoading) {
         return (
             <div className="divide-y">
@@ -206,11 +206,7 @@ export default function InvoiceDetailsDataTable() {
             accessorKey: "barcode",
             header: "الباركود",
             cell: (props) => {
-                const items: ComboboxItem[] = books.map((b) => ({
-                    label: b.barcode,
-                    value: b.id,
-                }))
-                return comboboxCellRenderer(props, items, `barcode-${Number(props.row.id) + 1}`)
+                return comboboxCellRenderer(props, comboBooksBarcodes, `barcode-${Number(props.row.id) + 1}`)
             },
         },
 
@@ -218,13 +214,7 @@ export default function InvoiceDetailsDataTable() {
         {
             accessorKey: "bookTitle",
             header: "اسم المنتج",
-            cell: (props) => {
-                const items: ComboboxItem[] = books.map((b) => ({
-                    label: b.bookTitle,
-                    value: b.id,
-                }))
-                return comboboxCellRenderer(props, items, `quantity-${props.row.id}`)
-            },
+            cell: (props) => (comboboxCellRenderer(props, comboBooksTitles, `quantity-${props.row.id}`)),
         },
 
         // quantity column
