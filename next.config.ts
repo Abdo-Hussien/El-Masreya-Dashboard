@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-
+/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
     /* config options here */
     output: 'standalone',
@@ -7,9 +7,7 @@ const nextConfig: NextConfig = {
     experimental: {
         globalNotFound: true
     },
-
     webpack: (config, { isServer }) => {
-        // // Ignore .html files in problematic modules
         if (isServer) {
             config.externals.push('odbc')
         }

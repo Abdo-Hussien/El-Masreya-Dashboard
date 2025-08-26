@@ -24,5 +24,5 @@ export interface InvoiceContextType {
     selectedCustomer: ComboboxItem | undefined
     selectedStatus: ComboboxItem | undefined
     setSelectedCustomer: React.Dispatch<React.SetStateAction<ComboboxItem | undefined>>
-    setSelectedStatus: React.Dispatch<React.SetStateAction<ComboboxItem>>
+    setSelectedStatus: React.Dispatch<React.SetStateAction<ComboboxItem | undefined>>
 }

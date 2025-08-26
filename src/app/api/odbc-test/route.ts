@@ -1,5 +1,5 @@
 // src/app/api/odbc-test/route.ts
-import { getConnection } from '@/lib/OdbcDb';
+import { getConnection } from '@/server/OdbcDb';
 import { NextResponse } from 'next/server';
 // import odbc from 'odbc'
 export async function GET() {

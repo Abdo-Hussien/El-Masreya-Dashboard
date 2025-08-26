@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { flexRender, useReactTable } from "@tanstack/react-table"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, CircleX } from "lucide-react"
 
 import Button from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -23,7 +23,7 @@ export function DataTable({ table, filterField, primaryGroup, quickFilters, foot
     return (
         <div className="w-full">
             <div className="flex flex-wrap items-center gap-4 p-4">
-                <Input placeholder="ابحث..."
+                <Input clearable placeholder="ابحث..."
                     value={(table.getColumn(filterField)?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
                         table.getColumn(filterField)?.setFilterValue(event.target.value)

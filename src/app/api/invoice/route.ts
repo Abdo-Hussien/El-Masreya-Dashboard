@@ -2,9 +2,8 @@ import { handleError } from '@/utils/error-handler'
 import { BadRequestError, NotFoundError } from '@/utils/errors'
 import { NextResponse } from 'next/server'
 import { formatAccessDate } from '@/utils/value-formatter'
-import { getConnection } from '@/lib/OdbcDb'
+import { getConnection } from '@/server/OdbcDb'
 import { Connection } from 'odbc'
-import '@/../monitor-process'
 
 interface _InvoicePayload {
     customer_id: number

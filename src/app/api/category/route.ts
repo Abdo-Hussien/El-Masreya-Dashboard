@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/scripts/get-categories'
-import { getConnection } from '@/lib/OdbcDb'
+import { getConnection } from '@/server/OdbcDb'
 
 export async function GET() {
     try {

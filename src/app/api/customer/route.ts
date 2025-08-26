@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/scripts/get-customers'
 import { Customer } from '@/interfaces/Customer'
-import { getConnection } from '@/lib/OdbcDb'
+import { getConnection } from '@/server/OdbcDb'
 
 export async function GET() {
     try {

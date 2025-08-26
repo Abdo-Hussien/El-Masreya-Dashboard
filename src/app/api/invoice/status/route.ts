@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/scripts/get-invoice-statuses'
-import { getConnection } from '@/lib/OdbcDb'
+import { getConnection } from '@/server/OdbcDb'
 
 export async function GET() {
     try {

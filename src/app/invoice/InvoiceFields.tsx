@@ -22,7 +22,7 @@ export default function InvoiceFields() {
     const { selectedCustomer, selectedStatus, setSelectedCustomer, setSelectedStatus } = useContext(InvoiceContext)
     const mapCustomers = useCallback(
         (res: { data: Customer[] }) => {
-            return res.data.map((c) => ({ label: c.name, value: c.id, }))
+            return res.data.map((c) => ({ label: c.name ?? "لا يوجد اسم...", value: Number(c.id), }))
         }, []
     )
 
@@ -57,7 +57,7 @@ export default function InvoiceFields() {
                 <Combobox
                     item={selectedStatus}
                     items={statuses}
-                    onSelect={() => setSelectedStatus}
+                    onSelect={setSelectedStatus}
                     className={comboWidth}
                     placeholder={loadingStatuses ? "جارٍ التحميل..." : "اختر حالة الفاتورة"}
                 />

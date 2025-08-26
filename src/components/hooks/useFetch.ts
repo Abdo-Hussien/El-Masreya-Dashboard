@@ -17,12 +17,10 @@ export function useFetch<T>(url: string) {
     })
 
     useEffect(() => {
-        const controller = new AbortController();
-
         (async () => {
             try {
 
-                const res = await axios.get<T>(url, { signal: controller.signal })
+                const res = await axios.get<T>(url)
                 setResponse((prev) => ({ ...prev, data: res.data }))
             } catch (err) {
                 if (!(err instanceof DOMException && err.name === "AbortError")) {
@@ -35,7 +33,6 @@ export function useFetch<T>(url: string) {
             }
         })()
 
-        return () => controller.abort()
     }, [url])
 
     return response

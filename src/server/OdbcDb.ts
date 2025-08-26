@@ -1,14 +1,10 @@
 "use server"
 
 import type * as ODBC from "odbc"
-import dotenv from 'dotenv'
-
-dotenv.config()
-
 
 async function getConnection() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const odbc: typeof ODBC = require('odbc')
+
+  const odbc: typeof ODBC = (await import("odbc")).default
   return await odbc.connect('DSN=Masria_V26')
 }
 

@@ -17,14 +17,14 @@ export default function InvoiceContextProvider({ children }: { children: React.R
             summaryFields.amountPaid > summaryFields.finalTotal
                 ? summaryFields.amountPaid - summaryFields.finalTotal
                 : 0
-
+        console.log("Selected Status: ", selectedStatus)
         const payload = {
             invoice: {
                 customer_id: selectedCustomer?.value,
                 amount_paid: summaryFields.amountPaid,
                 amount_refunded,
                 discount: summaryFields.sale,
-                status_id: selectedStatus?.value,
+                status_id: selectedStatus ? selectedStatus.value : 3, // Default to "لم يتم التحاسب" if no status is selected
                 override_is_wholesale: undefined
             },
             inv_details: invoiceDetails.map((detail) => ({

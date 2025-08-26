@@ -27,12 +27,10 @@ export interface ComboboxItem<K = number> {
 
 interface ComboboxProps {
   /** Controlled value */
-  item?: ComboboxItem
-  /** Default value (for uncontrolled usage) */
-  defaultItem?: ComboboxItem
+  item: ComboboxItem | undefined
   items: ComboboxItem[]
   mode?: Mode
-  onSelect?: (item: ComboboxItem | undefined) => void
+  onSelect: (item: ComboboxItem | undefined) => void
   handleOnBlur?: () => void
   placeholder?: string
   variant?: VariantProps<typeof comboboxVariants>["variant"]
@@ -44,7 +42,7 @@ const comboboxVariants = cva(
     variants: {
       variant: {
         default:
-          "border bg-background shadow-xs text-muted-foreground hover:border-ring hover:ring-ring/5 hover:ring-[3px] dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border bg-background shadow-xs text-muted-foreground hover:border-ring hover:ring-ring/3 hover:ring-[3px] dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         tonal:
           "bg-primary-foreground/60 text-primary hover:bg-primary-foreground/80",
         ghost: [
@@ -65,8 +63,7 @@ export default forwardRef<
   ComboboxProps
 >(function Combobox(
   {
-    item, // controlled
-    defaultItem, // uncontrolled initial value
+    item,
     items,
     mode,
     id,
@@ -80,19 +77,11 @@ export default forwardRef<
   ref
 ) {
   const [open, setOpen] = useState(false)
-  const [uncontrolledSelected, setUncontrolledSelected] = useState<ComboboxItem | undefined>(defaultItem)
-
-  const isControlled = item !== undefined
-  const selected = isControlled ? item : uncontrolledSelected
 
   function handleOnSelect(value: string) {
     setOpen(false)
-
     const newItem = items.find((i) => i.value === Number(value))
-    if (!isControlled) {
-      setUncontrolledSelected(newItem)
-    }
-    onSelect?.(newItem)
+    onSelect(newItem)
   }
 
   const onOpenChange = (open: boolean) => {
@@ -105,7 +94,10 @@ export default forwardRef<
     else if (mode === "write") setOpen(true)
   }, [mode])
 
-  const componentVariants = comboboxVariants({ variant, className }) as VariantProps<typeof comboboxVariants>
+  const componentVariants = comboboxVariants({
+    variant,
+    className,
+  }) as VariantProps<typeof comboboxVariants>
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
@@ -117,37 +109,34 @@ export default forwardRef<
           role="combobox"
           aria-expanded={open}
         >
-          {selected?.label || (
+          {item?.label || (
             <span className="text-muted-foreground">{placeholder}</span>
           )}
           <ChevronsUpDown className="h-2 w-2 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full lg:w-[var(--radix-popover-trigger-width)] p-0">
-        <Command filter={(value, search, keywords) => {
-          // `value` = CommandItem's value (your numeric ID as string)
-          // `keywords` = array of extra search terms you can pass
-          // In our case, we’ll pass `it.label` as a keyword for searching
-          if (!search) return 1
-
-          return keywords?.some(k =>
-            k.toLowerCase().includes(search.toLowerCase())
-          )
-            ? 1
-            : 0
-        }}>
+        <Command
+          filter={(value, search, keywords) => {
+            if (!search) return 1
+            return keywords?.some((k) => k.toLowerCase().includes(search.toLowerCase())) ? 1 : 0
+          }}
+        >
           <CommandInput placeholder={placeholder} />
           <CommandEmpty>No result found.</CommandEmpty>
           <CommandGroup className="overflow-y-auto max-h-52">
             {items.map((it) => {
-              const value = it.value.toString()
+              const value = String(it.value ?? "")
               return (
-                <CommandItem keywords={[it.label]} key={value} className={cn("duration-100 transition-all", selected?.value === it.value ? "bg-muted" : "hover:bg-accent")}
+                <CommandItem
+                  key={value}
                   value={value}
+                  keywords={it.label ? [it.label] : []}
+                  className={cn("duration-100 transition-all", item?.value === it.value ? "bg-muted" : "hover:bg-accent")}
                   onSelect={handleOnSelect}
                   {...props}
                 >
-                  <Check className={cn("mr-2 h-4 w-4", selected?.value === it.value ? "opacity-100" : "opacity-0")} />
+                  <Check className={cn("mr-2 h-4 w-4", item?.value === it.value ? "opacity-100" : "opacity-0")} />
                   {it.label}
                 </CommandItem>
               )
