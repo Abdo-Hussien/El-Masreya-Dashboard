@@ -17,6 +17,7 @@ import { InvoiceContext } from "@/store/invoice-context"
 import { BooksContext } from "@/store/book-context"
 import { Badge } from "../badge"
 import { DataTableSkeletonRow } from "../loaders/DataTableSkeletonRow"
+import { FormatterFunction } from "@/types/Formatter"
 
 type CellRendererProps = {
     row: Row<InvoiceDetail>,
@@ -29,13 +30,6 @@ type CellRendererProps = {
 * A generic callback for updating cell values
 */
 type UpdateCallback<T> = (newValue: T) => void
-
-/**
-* Formatter type for parsing/formatting values
-* 
-* For example, you would call `parseNumber()` or `parseDate()` 
-*/
-type FormatterFunction = (value: number | string) => string
 
 export default function InvoiceDetailsDataTable() {
     const { books } = useContext(BooksContext)

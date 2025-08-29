@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { flexRender, useReactTable } from "@tanstack/react-table"
-import { ChevronDown, CircleX } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 
 import Button from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
