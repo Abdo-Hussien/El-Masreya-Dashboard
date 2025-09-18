@@ -3,12 +3,11 @@
 import { useState, useEffect, useContext } from "react"
 import { Label } from "@/components/ui/label"
 import Button from "@/components/ui/button"
-import Combobox, { ComboboxItem } from "@/components/ui/combobox"
+import Combobox from "@/components/ui/combobox"
 import { X, Filter } from "lucide-react"
 import Divider from "../divider"
 import { BooksContext } from "@/store/book-context"
 import { CategoriesContext } from "@/store/category-context"
-import { Checkbox } from "../checkbox"
 
 interface FilterSidebarProps {
     open: boolean
