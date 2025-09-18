@@ -76,16 +76,23 @@ export default forwardRef<
   },
   ref
 ) {
+  const [search, setSearch] = useState("")
+  const [visibleCount, setVisibleCount] = useState(20)
+
+  const filteredItems = items.filter((it) => !search || it.label.toLowerCase().includes(search.toLowerCase()) || String(it.value).toLowerCase().includes(search.toLowerCase()))
   const [open, setOpen] = useState(false)
 
   function handleOnSelect(value: string) {
     setOpen(false)
-    const newItem = items.find((i) => i.value === Number(value))
+    const newItem = filteredItems.slice(0, visibleCount).find((i) => i.value === Number(value))
+    console.log("new item: ", newItem)
     onSelect(newItem)
   }
 
   const onOpenChange = (open: boolean) => {
     setOpen(open)
+    setVisibleCount(20)// reset when closing
+    setSearch("")
     handleOnBlur?.()
   }
 
@@ -119,30 +126,53 @@ export default forwardRef<
         <Command
           filter={(value, search, keywords) => {
             if (!search) return 1
-            return keywords?.some((k) => k.toLowerCase().includes(search.toLowerCase())) ? 1 : 0
+            return keywords?.some((k) =>
+              k.toLowerCase().includes(search.toLowerCase())
+            )
+              ? 1
+              : 0
           }}
         >
-          <CommandInput placeholder={placeholder} />
+          <CommandInput placeholder={placeholder} onValueChange={setSearch} />
           <CommandEmpty>No result found.</CommandEmpty>
-          <CommandGroup className="overflow-y-auto max-h-52">
-            {items.map((it) => {
+          <CommandGroup
+            className="overflow-y-auto max-h-52"
+            ref={(el) => {
+              if (!el) return
+              el.onscroll = () => {
+                if (el.scrollTop + el.clientHeight >= el.scrollHeight - 5) {
+                  setVisibleCount((prev) => Math.min(prev + 20, filteredItems.length))
+                }
+              }
+            }}
+          >
+            {filteredItems.slice(0, visibleCount).map((it) => {
               const value = String(it.value ?? "")
               return (
                 <CommandItem
                   key={value}
                   value={value}
-                  keywords={it.label ? [it.label] : []}
-                  className={cn("duration-100 transition-all", item?.value === it.value ? "bg-muted" : "hover:bg-accent")}
+                  keywords={[it.label, value]}
+                  className={cn(
+                    "duration-100 transition-all",
+                    item?.value === it.value ? "bg-muted" : "hover:bg-accent"
+                  )}
                   onSelect={handleOnSelect}
                   {...props}
                 >
-                  <Check className={cn("mr-2 h-4 w-4", item?.value === it.value ? "opacity-100" : "opacity-0")} />
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      item?.value === it.value ? "opacity-100" : "opacity-0"
+                    )}
+                  />
                   {it.label}
                 </CommandItem>
               )
             })}
           </CommandGroup>
         </Command>
+
       </PopoverContent>
     </Popover>
   )

@@ -85,7 +85,7 @@ export default function InvoiceDetailsDataTable() {
             if (isLastRowBarcode) {
                 addRow();
             }
-            setTimeout(() => requestAnimationFrame(() => focusCell(cellToFocusOn)), 800)
+            setTimeout(() => requestAnimationFrame(() => focusCell(cellToFocusOn)), 100)
         }
 
         const validate = (newValue: number): boolean => {
@@ -134,7 +134,7 @@ export default function InvoiceDetailsDataTable() {
                 addRow();
             }
             // console.log(cellRefs, cellToFocusOn)
-            setTimeout(() => requestAnimationFrame(() => focusCell(cellToFocusOn)), 800)
+            setTimeout(() => requestAnimationFrame(() => focusCell(cellToFocusOn)), 100)
         }
 
         return (
